@@ -36,4 +36,26 @@ class Module
             ),
         );
     }
+
+    public function getServiceConfig() {
+        return array(
+            'factories' => array(
+                'Application\Resource\SupportedLocale' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Resource\SupportedLocale($dbAdapter);
+                    return $table;
+                },
+                'Application\Resource\Translation' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Resource\Translation($dbAdapter);
+                    return $table;
+                },
+                'Application\Resource\TranslationBase' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Resource\TranslationBase($dbAdapter);
+                    return $table;
+                },
+            ),
+        );
+    }
 }
