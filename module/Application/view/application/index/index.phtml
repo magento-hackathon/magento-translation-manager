@@ -36,9 +36,9 @@
                     Translation file <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => null))); ?>">all files</a></li>
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => null, 'filter_unclear_translation' => $currentFilterUnclear))); ?>">all files</a></li>
                     <?php foreach ($translationFiles as $fileName): ?>
-                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $fileName))); ?>">
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $fileName, 'filter_unclear_translation' => $currentFilterUnclear))); ?>">
                             <?php echo $fileName ?></a>
                     </li>
                     <?php endforeach; ?>
@@ -51,7 +51,7 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <?php foreach ($supportedLocales as $locale): ?>
-                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $locale, 'file' => $currentFile))); ?>">
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $locale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear))); ?>">
                                 <?php echo $locale ?></a>
                         </li>
                     <?php endforeach; ?>
@@ -112,9 +112,9 @@
                                 <div style="min-width: 125px">
                                     <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
                                     <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
-                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="left" title="Tooltip on left"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-floppy-disk"></span></button>
                                     &nbsp;
-                                    <button type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil"></span></button>
+                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="Edit entry" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
                                 </div>
                             <td>
                         </tr>

@@ -1,0 +1,88 @@
+<?php
+/**
+ * @var $this Zend\View\Renderer\PhpRenderer
+ *
+ * @var
+ */
+?>
+<ul class="messages row">
+    <?php if (isset($messages)): ?>
+        <?php foreach ($messages as $messageLevel => $messageLevelContainer): ?>
+            <?php foreach ($messageLevelContainer as $message): ?>
+                <li class="alert alert-<?php echo $this->escapeHtmlAttr($messageLevel); ?>" role="alert">
+                    <?php echo $this->escapeHtml($message); ?>
+                </li>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</ul>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><b>Basic data</b></div>
+    <div class="panel-body">
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Language <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">de_DE</a></li>
+                <li><a href="#">de_AT</a></li>
+                <li><a href="#">de_CH</a></li>
+            </ul>
+        </div>
+        <b>selected file:</b> <span class="label label-primary">FireGento_MageSetup.csv</span> <b>selected language:</b> <span class="label label-default">de_DE</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Origin source</b><br/><span class="label label-danger">Not used anymore</span></div>
+            <div class="panel-body">
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Current translation</b></div>
+            <div class="panel-body">
+                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>New suggested translation</b></div>
+            <div class="panel-body">
+                <div class="input-group">
+                    <textarea class="form-control" rows="3"></textarea>
+                    <button type="button" class="btn btn-primary">SUBMIT</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-8">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Usage</div>
+            <div class="panel-body">
+                <img class="img-responsive" src="http://de.nr-apps.com/store/media/catalog/product/cache/4/image/780x390/9df78eab33525d08d6e5fb8d27136e95/e/a/easylog_03.png">
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Navigation</div>
+            <div class="panel-body">
+                <div class="btn-group">
+                    <a class="btn btn-default" href="">Previous translation</a>
+                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => 'FIXME'))) ?>">Back to overall view list</a>
+                    <a class="btn btn-default" href="">Next translation</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

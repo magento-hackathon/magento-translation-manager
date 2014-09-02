@@ -110,6 +110,16 @@ class IndexController extends AbstractActionController
         return $view;
     }
 
+    public function editAction()  // Translation detail
+    {
+        var_dump($this->params('base_id'));
+        var_dump($this->params()->fromQuery('locale'));
+
+        return new ViewModel(array(
+
+        ));
+    }
+
     /**
      * save Translation element with given data
      *
