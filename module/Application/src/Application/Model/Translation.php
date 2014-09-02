@@ -63,7 +63,7 @@ class Translation extends Base {
     }
 
     public function getUnclearTranslation() {
-        return $this->_suggestedTranslation;
+        return $this->_unclearTranslation;
     }
 
     public function setUnclearTranslation($unclearTranslation) {

@@ -35,3 +35,15 @@ div.container a.brand {
     margin-left: 0;
     padding: 8px 20px 12px 40px;
 }
+
+/* added by NAF */
+#translation-grid *, #translation-grid *:before, #translation-grid *:after {
+    box-sizing: inherit;
+}
+#translation-grid .suggested-translation input {
+    min-width: 255px;
+}
+ul.messages {
+    list-style-type: none;
+    padding: 0;
+}

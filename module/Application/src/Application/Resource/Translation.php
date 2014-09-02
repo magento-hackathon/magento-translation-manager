@@ -48,7 +48,7 @@ class Translation extends Base {
      * @param string|null $file - file to select
      * @return array of Model\Translation
      */
-    public function fetchByLanguageAndFile($locale, $file = null)
+    public function fetchByLanguageAndFile($locale, $file = null, $filterUnclear = false)
     {
         // we need table object for quoteinto
 
@@ -63,6 +63,10 @@ class Translation extends Base {
 
         if (null != $file) {
             $select->where(array('translation_file' => $file));
+        }
+
+        if (true == $filterUnclear) {
+            $select->where(array('unclear_translation' => 1));
         }
 
         $statement  = $sql->prepareStatementForSqlObject($select);
@@ -102,7 +106,7 @@ class Translation extends Base {
             'locale'                => $translation->getLocale(),
             'current_translation'   => $translation->getCurrentTranslation(),
             'suggested_translation' => $translation->getSuggestedTranslation(),
-            'unclear_translation'   => $translation->getUnclearTranslation(),
+            'unclear_translation'   => (int)$translation->getUnclearTranslation(),
         );
 
         $id = (int) $translation->getId();

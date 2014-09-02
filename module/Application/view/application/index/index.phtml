@@ -8,16 +8,19 @@
  * @var array $translationFiles of string
  * @var string $currentLocale
  * @var array $currentFile of string
+ * @var boolean $currentFilterUnclear
  */
 ?>
 <div>
     <p><?php //echo sprintf($this->translate('Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
 </div>
-<ul class="messages">
+<ul class="messages row">
     <?php if (isset($messages)): ?>
-        <?php foreach ($messages as $messageLevelContainer): ?>
-            <?php foreach ($messageLevelContainer as $messageLevel => $message): ?>
-                <li class="<?php echo $this->escapeHtmlAttr($messageLevel); ?>"><?php echo $this->escapeHtml($message); ?></li>
+        <?php foreach ($messages as $messageLevel => $messageLevelContainer): ?>
+            <?php foreach ($messageLevelContainer as $message): ?>
+                <li class="alert alert-<?php echo $this->escapeHtmlAttr($messageLevel); ?>" role="alert">
+                    <?php echo $this->escapeHtml($message); ?>
+                </li>
             <?php endforeach; ?>
         <?php endforeach; ?>
     <?php endif; ?>
@@ -54,7 +57,7 @@
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <b>selected file:</b>
+            <strong>selected file:</strong>
             <?php if (empty($currentFile)): ?>
                 <span class="label label-info">all files</span>
             <?php else: ?>
@@ -63,7 +66,17 @@
                 <?php endforeach; ?>
             <?php endif; ?>
 
-            <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
+            <strong>selected language:</strong> <span class="label label-default"><?php echo $currentLocale ?></span>
+            <strong>unclear translations: </strong>
+            <?php if ($currentFilterUnclear): ?>
+                <button class="btn btn-primary" onclick="location.href='<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => 0))) ?>'">
+                    show only unclear
+                </button>
+            <?php else: ?>
+                <button class="btn btn-default" onclick="location.href='<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => 1))) ?>'">
+                    show only unclear
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -72,15 +85,13 @@
         <div class="panel-body">
             <form action="" method="post">
                 <input type="hidden" name="translation_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
-                <table class="table table-hover">
+                <table class="table table-hover" id="translation-grid">
                     <tr>
-                        <th>ID<th>
-                        <th>File<th>
                         <th>Origin source<th>
                         <th>Current translation<th>
+                        <th><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
                         <th>New suggested translation<th>
-                        <th>Submit new entry<th>
-                        <th>Edit entry<th>
+                        <th><th>
                     </tr>
                     <?php $rowNumber = 0; ?>
                     <?php foreach ($translations as $id => $translation): $rowNumber++; ?>
@@ -89,17 +100,23 @@
                         <?php $base = $translationBase[$translation['base_id']] ?>
                         <?php $rowName = 'row' . $rowNumber; ?>
                         <tr>
-                            <td><?php echo $translation['id'] ?> <td>
-                            <td><span class="label label-primary"><?php echo $this->escapeHtml($base->getTranslationFile()) ?></span><td>
                             <td><?php echo $this->escapeHtml($base ->getOriginSource()) ?><td>
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
-                            <td><input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $this->escapeHtmlAttr($translation['suggested_translation']) ?>" /><td>
                             <td>
-                                <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
-                                <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
-                                <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary">Save entry</button>
+                                <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>>
+                            </td>
+                            <td class="suggested-translation">
+                                <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $this->escapeHtmlAttr($translation['suggested_translation']) ?>" />
                             <td>
-                            <td><button type="button" class="btn btn-default">Edit</button><td>
+                            <td>
+                                <div style="min-width: 125px">
+                                    <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
+                                    <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
+                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="left" title="Tooltip on left"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                    &nbsp;
+                                    <button type="button" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil"></span></button>
+                                </div>
+                            <td>
                         </tr>
                     <?php endforeach; ?>
 

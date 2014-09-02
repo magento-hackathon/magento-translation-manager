@@ -18,8 +18,8 @@ class IndexController extends AbstractActionController
     const DEFAULT_LOCALE = 'de_DE';
 
     const MESSAGE_INFO = 'info';
-    const MESSAGE_WARN = 'warn';
-    const MESSAGE_ERROR = 'error';
+    const MESSAGE_WARN = 'warning';
+    const MESSAGE_ERROR = 'danger';
     const MESSAGE_SUCCESS = 'success';
 
     /**
@@ -47,6 +47,8 @@ class IndexController extends AbstractActionController
         // init grid
         $currentLocale = self::DEFAULT_LOCALE;
         $currentFile = null;
+        $currentFilterUnclear = (bool)$this->params()->fromQuery('filter_unclear_translation');
+
         if ($this->params()->fromQuery('locale')) {
             $currentLocale = $this->params()->fromQuery('locale');
         }
@@ -95,13 +97,14 @@ class IndexController extends AbstractActionController
 
         // prepare view
         $view =  new ViewModel(array(
-            'supportedLocales' => $this->getSupportedLocales(),
-            'translations'     => $this->getResourceTranslation()->fetchByLanguageAndFile($currentLocale, $currentFile),
-            'translationBase'  => $this->getResourceTranslationBase()->fetchAll(),
-            'translationFiles' => $this->getResourceTranslationBase()->getTranslationFileNames(),
-            'currentLocale'    => $currentLocale,
-            'currentFile'      => (array)$currentFile,
-            'messages'         => $this->_messages,
+            'supportedLocales'     => $this->getSupportedLocales(),
+            'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile($currentLocale, $currentFile, $currentFilterUnclear),
+            'translationBase'      => $this->getResourceTranslationBase()->fetchAll(),
+            'translationFiles'     => $this->getResourceTranslationBase()->getTranslationFileNames(),
+            'currentLocale'        => $currentLocale,
+            'currentFile'          => (array)$currentFile,
+            'currentFilterUnclear' => $currentFilterUnclear,
+            'messages'             => $this->_messages,
         ));
 
         return $view;
@@ -115,6 +118,10 @@ class IndexController extends AbstractActionController
      */
     protected function saveTranslationElement($element)
     {
+        if (!array_key_exists('unclearTranslation', $element)) {
+            $element['unclearTranslation'] = 0;
+        }
+
         $translation = null;
         if (isset($element['id'])) {
             $translation = $this->getResourceTranslation()->getTranslation($element['id']);
