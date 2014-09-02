@@ -90,10 +90,10 @@
                         <?php $rowName = 'row' . $rowNumber; ?>
                         <tr>
                             <td><?php echo $translation['id'] ?> <td>
-                            <td><span class="label label-primary"><?php echo $base->getTranslationFile() ?></span><td>
-                            <td><?php echo $base ->getOriginSource() ?><td>
-                            <td><?php echo $translation['current_translation'] ?><td>
-                            <td><input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $translation['suggested_translation'] ?>" /><td>
+                            <td><span class="label label-primary"><?php echo $this->escapeHtml($base->getTranslationFile()) ?></span><td>
+                            <td><?php echo $this->escapeHtml($base ->getOriginSource()) ?><td>
+                            <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
+                            <td><input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $this->escapeHtmlAttr($translation['suggested_translation']) ?>" /><td>
                             <td>
                                 <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
                                 <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
