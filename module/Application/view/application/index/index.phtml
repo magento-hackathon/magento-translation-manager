@@ -1,44 +1,93 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Welcome to %sZend Framework 2%s'), '<span class="zf-green">', '</span>') ?></h1>
-    <p><?php echo sprintf($this->translate('Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
-    <p><a class="btn btn-success btn-lg" href="https://github.com/zendframework/zf2" target="_blank"><?php echo $this->translate('Fork Zend Framework 2 on GitHub') ?> &raquo;</a></p>
+<?php
+/**
+ * @var array $supportedLocales of string
+ * @var array $translations of Translation
+ * @var array $translationBase of TranslationBase
+ * @var array $translationFiles of string
+ * @var string $currentLocale
+ * @var array $currentFile of string
+ */
+?>
+<div>
+    <p><?php //echo sprintf($this->translate('Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
 </div>
 
 <div class="row">
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>Basic data</b></div>
+        <div class="panel-body">
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Follow Development') ?></h3>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Translation file <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => null))); ?>">all files</a></li>
+                    <?php foreach ($translationFiles as $fileName): ?>
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $fileName))); ?>">
+                            <?php echo $fileName ?></a>
+                    </li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('Zend Framework 2 is under active development. If you are interested in following the development of ZF2, there is a special ZF2 portal on the official Zend Framework website which provides links to the ZF2 %swiki%s, %sdev blog%s, %sissue tracker%s, and much more. This is a great resource for staying up to date with the latest developments!'), '<a href="http://framework.zend.com/wiki/display/ZFDEV2/Home">', '</a>', '<a href="http://framework.zend.com/zf2/blog">', '</a>', '<a href="https://github.com/zendframework/zf2/issues">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://framework.zend.com/zf2" target="_blank"><?php echo $this->translate('ZF2 Development Portal') ?> &raquo;</a></p>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Language <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <?php foreach ($supportedLocales as $locale): ?>
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $locale, 'file' => $currentFile))); ?>">
+                                <?php echo $locale ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
+            <b>selected file:</b>
+            <?php if (empty($currentFile)): ?>
+                <span class="label label-info">all files</span>
+            <?php else: ?>
+                <?php foreach ($currentFile as $fileName): ?>
+                    <span class="label label-primary"><?php echo $fileName ?></span>
+                <?php endforeach; ?>
+            <?php endif; ?>
+
+            <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Discover Modules') ?></h3>
-            </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('The community is working on developing a community site to serve as a repository and gallery for ZF2 modules. The project is available %son GitHub%s. The site is currently live and currently contains a list of some of the modules already available for ZF2.'), '<a href="https://github.com/zendframework/modules.zendframework.com">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://modules.zendframework.com/" target="_blank"><?php echo $this->translate('Explore ZF2 Modules') ?> &raquo;</a></p>
-            </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><b>overall view list</b></div>
+        <div class="panel-body">
+            <table class="table table-hover">
+
+                <tr>
+                    <th>ID<td>
+                    <th>File<td>
+                    <th>Origin source<th>
+                    <th>Current translation<th>
+                    <th>New suggested translation<th>
+                    <th>Submit new entry<th>
+                    <th>Edit entry<th>
+                <tr/>
+                <?php foreach ($translations as $id => $translation): ?>
+                    <?php /* @var $translation \Application\Model\Translation */ ?>
+                    <?php /* @var $base \Application\Model\TranslationBase */ ?>
+                    <?php $base = $translationBase[$translation['base_id']] ?>
+
+                    <tr>
+                        <td><?php echo $translation['id'] ?><td>
+                        <td><span class="label label-primary"><?php echo $base->getTranslationFile() ?></span><td>
+                        <td><?php echo $base ->getOriginSource() ?><td>
+                        <td><?php echo $translation['current_translation'] ?><td>
+                        <td><input type="text" class="form-control" value="<?php echo $translation['suggested_translation'] ?>" /><td>
+                        <td><button type="button" class="btn btn-primary">SUBMIT</button><td>
+                        <td><button type="button" class="btn btn-default">Edit</button><td>
+                    <tr/>
+                <?php endforeach; ?>
+
+            </table>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><?php echo $this->translate('Help &amp; Support') ?></h3>
-            </div>
-            <div class="panel-body">
-                <p><?php echo sprintf($this->translate('If you need any help or support while developing with ZF2, you may reach us via IRC: %s#zftalk on Freenode%s. We\'d love to hear any questions or feedback you may have regarding the beta releases. Alternatively, you may subscribe and post questions to the %smailing lists%s.'), '<a href="irc://irc.freenode.net/zftalk">', '</a>', '<a href="http://framework.zend.com/wiki/display/ZFDEV/Mailing+Lists">', '</a>') ?></p>
-                <p><a class="btn btn-success pull-right" href="http://webchat.freenode.net?channels=zftalk" target="_blank"><?php echo $this->translate('Ping us on IRC') ?> &raquo;</a></p>
-            </div>
-        </div>
-    </div>
 </div>

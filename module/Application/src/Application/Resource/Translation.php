@@ -4,27 +4,98 @@
 namespace Application\Resource;
 
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Sql;
 use Application\Model;
 
 class Translation extends Base {
 
     protected $table = 'translation';
 
-
-    public function fetchAll() {
-        $resultSet = $this->select(function (Select $select) {
-            $select->order('created ASC');
-        });
+    /**
+     * @param ResultSet $resultSet
+     * @return array of Model\Translation
+     */
+    protected function _prepareCollection($resultSet)
+    {
         $entities = array();
         foreach ($resultSet as $row) {
-            $entity = new Model\Translation();
-            $entity->setId($row->id)
-                ->setNote($row->note)
-                ->setCreated($row->created);
-            $entities[] = $entity;
+            $entity = new Model\Translation(array(
+                'id'                   => $row['id'],
+                'baseId'               => $row['base_id'],
+                'locale'               => $row['locale'],
+                'currentTranslation'   => $row['current_translation'],
+                'suggestedTranslation' => $row['suggested_translation'],
+                'unclearTranslation'   => $row['unclear_translation'],
+            ));
+            $entities[$row['id']] = $entity;
         }
         return $entities;
     }
+
+
+    public function fetchAll() {
+        $resultSet = $this->select(function (Select $select) {
+            $select->order('id ASC');
+        });
+        $entities = $this->_prepareCollection($resultSet);
+
+        return $entities;
+    }
+
+    /**
+     * @param string $locale - locale to select
+     * @param string|null $file - file to select
+     * @return array of Model\Translation
+     */
+    public function fetchByLanguageAndFile($locale, $file = null)
+    {
+        // we need table object for quoteinto
+
+        /*$sql = new Sql($this->getAdapter());
+        $select = $sql->select($this->table);
+        $select->order('id ASC');
+
+        $joinCondition  = $this->table . '.base_id = translation_base.base_id ';
+        $joinCondition .= " AND locale = '$locale'";
+        // quoteInto doesn't exist anymore and $this->adapter->getPlatform()->quoteValue() not working
+        $select->join('translation_base', $joinCondition, '*', Select::JOIN_RIGHT);
+
+        if (null != $file) {
+            $select->where(array('translation_file' => $file));
+        }
+
+        $statement  = $sql->prepareStatementForSqlObject($select);
+        */
+
+        //FIXME: find out how to quote a string into an SQL query in Zend Framework 2
+
+        $query = 'SELECT * FROM ' . $this->table . ' RIGHT JOIN translation_base '.
+                     'ON ' . $this->table . '.base_id = translation_base.base_id '.
+                     "AND locale = '" . mysql_real_escape_string($locale) . "' OR locale IS NULL ";
+
+        if (null != $file) {
+            $escaped = array();
+            foreach ((array)$file as $fileName) {
+                $escaped[] = mysql_real_escape_string($fileName);
+            }
+            $fileString = implode("','", $escaped);
+
+            $query .= "WHERE translation_file IN ('" . $fileString . "')";
+        }
+
+        $statement = $this->adapter->query($query);
+
+        $resultSet = $statement->execute();
+        //$entities = $this->_prepareCollection($resultSet);
+        $entities = array();
+        foreach ($resultSet as $row) {
+            $entities[] = $row;
+        }
+
+        return $entities;
+    }
+
+
 
     public function getTranslation($id) {
         $row = $this->select(array('id' => (int) $id))->current();
