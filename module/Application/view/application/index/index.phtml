@@ -1,5 +1,7 @@
 <?php
 /**
+ * @var $this Zend\View\Renderer\PhpRenderer
+ *
  * @var array $supportedLocales of string
  * @var array $translations of Translation
  * @var array $translationBase of TranslationBase
@@ -11,6 +13,15 @@
 <div>
     <p><?php //echo sprintf($this->translate('Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
 </div>
+<ul class="messages">
+    <?php if (isset($messages)): ?>
+        <?php foreach ($messages as $messageLevelContainer): ?>
+            <?php foreach ($messageLevelContainer as $messageLevel => $message): ?>
+                <li class="<?php echo $this->escapeHtmlAttr($messageLevel); ?>"><?php echo $this->escapeHtml($message); ?></li>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</ul>
 
 <div class="row">
     <div class="panel panel-default">
@@ -59,34 +70,43 @@
     <div class="panel panel-default">
         <div class="panel-heading"><b>overall view list</b></div>
         <div class="panel-body">
-            <table class="table table-hover">
-
-                <tr>
-                    <th>ID<td>
-                    <th>File<td>
-                    <th>Origin source<th>
-                    <th>Current translation<th>
-                    <th>New suggested translation<th>
-                    <th>Submit new entry<th>
-                    <th>Edit entry<th>
-                <tr/>
-                <?php foreach ($translations as $id => $translation): ?>
-                    <?php /* @var $translation \Application\Model\Translation */ ?>
-                    <?php /* @var $base \Application\Model\TranslationBase */ ?>
-                    <?php $base = $translationBase[$translation['base_id']] ?>
-
+            <form action="" method="post">
+                <input type="hidden" name="translation_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
+                <table class="table table-hover">
                     <tr>
-                        <td><?php echo $translation['id'] ?><td>
-                        <td><span class="label label-primary"><?php echo $base->getTranslationFile() ?></span><td>
-                        <td><?php echo $base ->getOriginSource() ?><td>
-                        <td><?php echo $translation['current_translation'] ?><td>
-                        <td><input type="text" class="form-control" value="<?php echo $translation['suggested_translation'] ?>" /><td>
-                        <td><button type="button" class="btn btn-primary">SUBMIT</button><td>
-                        <td><button type="button" class="btn btn-default">Edit</button><td>
-                    <tr/>
-                <?php endforeach; ?>
+                        <th>ID<th>
+                        <th>File<th>
+                        <th>Origin source<th>
+                        <th>Current translation<th>
+                        <th>New suggested translation<th>
+                        <th>Submit new entry<th>
+                        <th>Edit entry<th>
+                    </tr>
+                    <?php $rowNumber = 0; ?>
+                    <?php foreach ($translations as $id => $translation): $rowNumber++; ?>
+                        <?php /* @var $translation \Application\Model\Translation */ ?>
+                        <?php /* @var $base \Application\Model\TranslationBase */ ?>
+                        <?php $base = $translationBase[$translation['base_id']] ?>
+                        <?php $rowName = 'row' . $rowNumber; ?>
+                        <tr>
+                            <td><?php echo $translation['id'] ?> <td>
+                            <td><span class="label label-primary"><?php echo $base->getTranslationFile() ?></span><td>
+                            <td><?php echo $base ->getOriginSource() ?><td>
+                            <td><?php echo $translation['current_translation'] ?><td>
+                            <td><input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $translation['suggested_translation'] ?>" /><td>
+                            <td>
+                                <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
+                                <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
+                                <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary">Save entry</button>
+                            <td>
+                            <td><button type="button" class="btn btn-default">Edit</button><td>
+                        </tr>
+                    <?php endforeach; ?>
 
-            </table>
+                </table>
+                <input type="hidden" name="elements_in_form" value="<?php echo $rowNumber ?>" />
+                <button type="submit" value="all" name="rowid" class="btn btn-primary">Save all</button>
+            </form>
         </div>
     </div>
 

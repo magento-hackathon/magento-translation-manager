@@ -9,12 +9,18 @@
 
 namespace Application\Controller;
 
+use Application\Model\Translation;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class IndexController extends AbstractActionController
 {
     const DEFAULT_LOCALE = 'de_DE';
+
+    const MESSAGE_INFO = 'info';
+    const MESSAGE_WARN = 'warn';
+    const MESSAGE_ERROR = 'error';
+    const MESSAGE_SUCCESS = 'success';
 
     /**
      * @var $_translationBaseTable \Application\Resource\TranslationBase
@@ -30,11 +36,15 @@ class IndexController extends AbstractActionController
      */
     protected $_supportedLocale = null;
 
+    /**
+     * @var array - system messages
+     */
+    protected $_messages = array( /* type => array (message) */ );
 
-    public function indexAction()
+
+    public function indexAction()  // Translation grid
     {
-        // Translation grid
-
+        // init grid
         $currentLocale = self::DEFAULT_LOCALE;
         $currentFile = null;
         if ($this->params()->fromQuery('locale')) {
@@ -44,15 +54,83 @@ class IndexController extends AbstractActionController
             $currentFile = (array)$this->params()->fromQuery('file');
         }
 
-        return new ViewModel(array(
+        // save form
+        if ($this->params()->fromPost('rowid')) {
+            $translationLocale = $this->params()->fromPost('translation_locale');
+            // split POST params into rows
+            $formRows = array( /* rowid => array(field => value) */ );
+            $postParams = $this->params()->fromPost();
+            foreach ($postParams as $postKey => $postValue) {
+                if (preg_match('@(row\d+)_(.+)@', $postKey, $matches)) {
+                    $formRows[$matches[1]][$matches[2]] = $postValue;
+                }
+            }
+
+            // decide if one or all elements should be saved
+            if ('all' == $this->params()->fromPost('rowid')) {
+                $noError = true;
+                foreach ($formRows as $row) {
+                    $row['locale'] = $translationLocale;
+                    $success = $this->saveTranslationElement($row);
+                    $noError &= (bool)$success;
+                }
+
+                if (false == $noError) {
+                    $this->addMessage('Error saving one or more elements', self::MESSAGE_ERROR);
+                } else {
+                    $this->addMessage('All elements are saved successfully', self::MESSAGE_SUCCESS);
+                }
+            } else {
+                $rowId = $this->params()->fromPost('rowid');
+                $formRows[$rowId]['locale'] = $translationLocale;
+                $success = $this->saveTranslationElement($formRows[$rowId]);
+
+                if (false == $success) {
+                    $this->addMessage('Error saving element', self::MESSAGE_ERROR);
+                } else {
+                    $this->addMessage(sprintf('Element %s saved successfully', $success), self::MESSAGE_SUCCESS);
+                }
+            }
+        }
+
+        // prepare view
+        $view =  new ViewModel(array(
             'supportedLocales' => $this->getSupportedLocales(),
             'translations'     => $this->getResourceTranslation()->fetchByLanguageAndFile($currentLocale, $currentFile),
             'translationBase'  => $this->getResourceTranslationBase()->fetchAll(),
             'translationFiles' => $this->getResourceTranslationBase()->getTranslationFileNames(),
             'currentLocale'    => $currentLocale,
             'currentFile'      => (array)$currentFile,
+            'messages'         => $this->_messages,
         ));
+
+        return $view;
     }
+
+    /**
+     * save Translation element with given data
+     *
+     * @param array $element - Translation element data
+     * @return int|false - id of saved element
+     */
+    protected function saveTranslationElement($element)
+    {
+        $translation = null;
+        if (isset($element['id'])) {
+            $translation = $this->getResourceTranslation()->getTranslation($element['id']);
+            if (false == $translation) {
+                $translation = new Translation();
+            }
+            $translation->setOptions($element);
+        } else {
+            $translation = new Translation($element);
+        }
+
+        $success = $this->getResourceTranslation()->saveTranslation($translation);
+
+        return $success;
+    }
+
 
     /**
      * @return array
@@ -100,4 +178,14 @@ class IndexController extends AbstractActionController
         return $this->_translationBaseTable;
     }
 
+    /**
+     * add message to system message queue
+     *
+     * @param $message - message to note
+     * @param string $level - message leven eg.g error or info
+     */
+    protected function addMessage($message, $level = self::MESSAGE_INFO)
+    {
+        $this->_messages[$level][] = $message;
+    }
 }

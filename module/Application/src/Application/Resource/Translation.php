@@ -107,7 +107,7 @@ class Translation extends Base {
             'baseId'               => $row->base_id,
             'locale'               => $row->locale,
             'currentTranslation'   => $row->current_translation,
-            'suggestedTranslation' => $row->suggestedTranslation,
+            'suggestedTranslation' => $row->suggested_translation,
             'unclearTranslation'   => $row->unclear_translation,
         ));
         return $translation;
@@ -115,12 +115,12 @@ class Translation extends Base {
 
     public function saveTranslation(Model\Translation $translation) {
         $data = array(
-            'id'                   => $translation->getId(),
-            'baseId'               => $translation->getBaseId(),
-            'locale'               => $translation->getLocale(),
-            'currentTranslation'   => $translation->getCurrentTranslation(),
-            'suggestedTranslation' => $translation->getSuggestedTranslation(),
-            'unclearTranslation'   => $translation->getUnclearTranslation(),
+            'id'                    => $translation->getId(),
+            'base_id'               => $translation->getBaseId(),
+            'locale'                => $translation->getLocale(),
+            'current_translation'   => $translation->getCurrentTranslation(),
+            'suggested_translation' => $translation->getSuggestedTranslation(),
+            'unclear_translation'   => $translation->getUnclearTranslation(),
         );
 
         $id = (int) $translation->getId();
