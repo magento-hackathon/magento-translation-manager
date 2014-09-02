@@ -5,6 +5,7 @@ namespace Application\Resource;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Expression;
 use Application\Model;
 
 class Translation extends Base {
@@ -51,39 +52,20 @@ class Translation extends Base {
     {
         // we need table object for quoteinto
 
-        /*$sql = new Sql($this->getAdapter());
+        $sql = new Sql($this->getAdapter());
         $select = $sql->select($this->table);
         $select->order('id ASC');
 
         $joinCondition  = $this->table . '.base_id = translation_base.base_id ';
-        $joinCondition .= " AND locale = '$locale'";
+        $joinCondition .= " AND locale = " . $this->adapter->getPlatform()->quoteValue($locale) . ' OR locale IS NULL ';
         // quoteInto doesn't exist anymore and $this->adapter->getPlatform()->quoteValue() not working
-        $select->join('translation_base', $joinCondition, '*', Select::JOIN_RIGHT);
+        $select->join('translation_base', new Expression($joinCondition), '*', Select::JOIN_RIGHT);
 
         if (null != $file) {
             $select->where(array('translation_file' => $file));
         }
 
         $statement  = $sql->prepareStatementForSqlObject($select);
-        */
-
-        //FIXME: find out how to quote a string into an SQL query in Zend Framework 2
-
-        $query = 'SELECT * FROM ' . $this->table . ' RIGHT JOIN translation_base '.
-                     'ON ' . $this->table . '.base_id = translation_base.base_id '.
-                     "AND locale = '" . mysql_real_escape_string($locale) . "' OR locale IS NULL ";
-
-        if (null != $file) {
-            $escaped = array();
-            foreach ((array)$file as $fileName) {
-                $escaped[] = mysql_real_escape_string($fileName);
-            }
-            $fileString = implode("','", $escaped);
-
-            $query .= "WHERE translation_file IN ('" . $fileString . "')";
-        }
-
-        $statement = $this->adapter->query($query);
 
         $resultSet = $statement->execute();
         //$entities = $this->_prepareCollection($resultSet);
