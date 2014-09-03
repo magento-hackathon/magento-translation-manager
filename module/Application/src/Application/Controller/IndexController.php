@@ -70,27 +70,42 @@ class IndexController extends AbstractActionController
 
             // decide if one or all elements should be saved
             if ('all' == $this->params()->fromPost('rowid')) {
-                $noError = true;
+                $errors = 0;
+                $elementsModified = 0;
                 foreach ($formRows as $row) {
-                    $row['locale'] = $translationLocale;
-                    $success = $this->saveTranslationElement($row);
-                    $noError &= (bool)$success;
+                    try {
+                        $row['locale'] = $translationLocale;
+                        $modified = $this->saveTranslationElement($row);
+                        if (false !== $modified) {
+                            $elementsModified++;
+                        }
+                    } catch(\Exception $e) {
+                        $errors++;
+                    }
                 }
 
-                if (false == $noError) {
-                    $this->addMessage('Error saving one or more elements', self::MESSAGE_ERROR);
-                } else {
-                    $this->addMessage('All elements are saved successfully', self::MESSAGE_SUCCESS);
+                if (0 < $errors) {
+                    $this->addMessage(sprintf('Error saving %d elements', $errors), self::MESSAGE_ERROR);
+                }
+                if (0 < $elementsModified) {
+                    $this->addMessage(sprintf('%d elements modified successfully', $elementsModified), self::MESSAGE_SUCCESS);
+                }
+                if (0 == $elementsModified && 0 == $errors) {
+                    $this->addMessage('No changes.', self::MESSAGE_INFO);
                 }
             } else {
                 $rowId = $this->params()->fromPost('rowid');
                 $formRows[$rowId]['locale'] = $translationLocale;
-                $success = $this->saveTranslationElement($formRows[$rowId]);
+                try {
+                    $success = $this->saveTranslationElement($formRows[$rowId]);
 
-                if (false == $success) {
+                    if (false == $success) {
+                        $this->addMessage('No changes.', self::MESSAGE_INFO);
+                    } else {
+                        $this->addMessage(sprintf('Element saved successfully (element %d)', $success), self::MESSAGE_SUCCESS);
+                    }
+                } catch(\Exception $e) {
                     $this->addMessage('Error saving element', self::MESSAGE_ERROR);
-                } else {
-                    $this->addMessage(sprintf('Element %s saved successfully', $success), self::MESSAGE_SUCCESS);
                 }
             }
         }

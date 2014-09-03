@@ -115,14 +115,16 @@ class Translation extends Base {
             if (!$this->insert($data))
                 return false;
             return $this->getLastInsertValue();
-        }
-        elseif ($this->getTranslation($id)) {
-            if (!$this->update($data, array('id' => $id)))
+
+        } elseif ($this->getTranslation($id)) {
+            if (!$this->update($data, array('id' => $id))) {
                 return false;
+            }
             return $id;
-        }
-        else
+
+        } else {
             return false;
+        }
     }
 
     public function deleteTranslation($id) {
