@@ -9,6 +9,7 @@
  * @var string $currentLocale
  * @var array $currentFile of string
  * @var boolean $currentFilterUnclear
+ * @var string $jumpToRow
  */
 ?>
 <div>
@@ -99,7 +100,7 @@
                         <?php /* @var $base \Application\Model\TranslationBase */ ?>
                         <?php $base = $translationBase[$translation['base_id']] ?>
                         <?php $rowName = 'row' . $rowNumber; ?>
-                        <tr>
+                        <tr id="<?php echo $rowName ?>">
                             <td><?php echo $this->escapeHtml($base ->getOriginSource()) ?><td>
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
                             <td>
@@ -128,3 +129,12 @@
     </div>
 
 </div>
+<?php if ($jumpToRow): ?>
+<script>
+    $(document).ready(function (){
+        $('html, body').animate({
+            scrollTop: $("#<?php echo $jumpToRow ?>").offset().top - 50 /* height of topmenu */
+        }, 1000);
+    });
+</script>
+<?php endif; ?>

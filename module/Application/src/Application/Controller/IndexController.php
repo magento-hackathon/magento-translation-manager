@@ -59,6 +59,7 @@ class IndexController extends AbstractActionController
         $this->init();
 
         // init grid
+        $jumpToRow = null;
         $currentFile = null;
         $currentFilterUnclear = (bool)$this->params()->fromQuery('filter_unclear_translation');
 
@@ -105,6 +106,7 @@ class IndexController extends AbstractActionController
                 }
             } else {
                 $rowId = $this->params()->fromPost('rowid');
+                $jumpToRow = $rowId;
                 $formRows[$rowId]['locale'] = $translationLocale;
                 try {
                     $success = $this->saveTranslationElement($formRows[$rowId]);
@@ -130,6 +132,7 @@ class IndexController extends AbstractActionController
             'currentFile'          => (array)$currentFile,
             'currentFilterUnclear' => $currentFilterUnclear,
             'messages'             => $this->_messages,
+            'jumpToRow'            => $jumpToRow,
         ));
 
         return $view;
