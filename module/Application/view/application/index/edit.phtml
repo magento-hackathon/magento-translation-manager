@@ -99,7 +99,7 @@ use Application\Model\Translation;
                     <img class="img-responsive" src="<?php echo $this->basePath('usages/' . $baseTranslation->getScreenPath()) ?>" />
                     </a>
                 <?php else: ?>
-                    <p>No image for usage available.</p>
+                    <img class="img-responsive" src="<?php echo $this->basePath('img/fallback-no-screenshot.png') ?>" />
                 <?php endif; ?>
             </div>
         </div>
