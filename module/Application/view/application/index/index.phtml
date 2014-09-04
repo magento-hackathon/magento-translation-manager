@@ -133,7 +133,7 @@
 <script>
     $(document).ready(function (){
         $('html, body').animate({
-            scrollTop: $("#<?php echo $jumpToRow ?>").offset().top - 50 /* height of topmenu */
+            scrollTop: $("#<?php echo $jumpToRow ?>").offset().top - $("#navbar").outerHeight()
         }, 1000);
     });
 </script>
