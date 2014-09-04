@@ -1,9 +1,16 @@
 <?php
+use Application\Model\TranslationBase;
+use Application\Model\Translation;
 /**
- * @var $this Zend\View\Renderer\PhpRenderer
+ * @var Zend\View\Renderer\PhpRenderer $this
  *
- * @var
+ * @var array $supportedLocales of strings
+ * @var string $currentLocale
+ * @var array $messages of strings
+ * @var TranslationBase $baseTranslation
+ * @var array $translations of Translation with index locale
  */
+//var_dump($translations);
 ?>
 <ul class="messages row">
     <?php if (isset($messages)): ?>
@@ -26,12 +33,14 @@
                 Language <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                <li><a href="#">de_DE</a></li>
-                <li><a href="#">de_AT</a></li>
-                <li><a href="#">de_CH</a></li>
+                <?php foreach ($supportedLocales as $locale): ?>
+                    <li><a href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $baseTranslation->getBaseId()), array('query' => array('locale' => $locale))); ?>">
+                            <?php echo $locale ?></a>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </div>
-        <b>selected file:</b> <span class="label label-primary">FireGento_MageSetup.csv</span> <b>selected language:</b> <span class="label label-default">de_DE</span>
+        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($baseTranslation->getTranslationFile()) ?></span> <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
     </div>
 </div>
 
@@ -39,25 +48,30 @@
     <div class="col-md-4">
 
         <div class="panel panel-default">
-            <div class="panel-heading"><b>Origin source</b><br/><span class="label label-danger">Not used anymore</span></div>
+            <div class="panel-heading">
+                <strong>Origin source</strong><br/>
+                <?php if ((bool)$baseTranslation->getNotInUse()): ?>
+                <span class="label label-danger">Not used anymore</span>
+                <?php endif; ?>
+            </div>
             <div class="panel-body">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                <?php echo $this->escapeHtml($baseTranslation->getOriginSource()); ?>
             </div>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading"><b>Current translation</b></div>
+            <div class="panel-heading"><strong>Current translation</strong></div>
             <div class="panel-body">
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
             </div>
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading"><b>New suggested translation</b></div>
+            <div class="panel-heading"><strong>New suggested translation</strong> (<?php echo $currentLocale ?>)</div>
             <div class="panel-body">
                 <div class="input-group">
-                    <textarea class="form-control" rows="3"></textarea>
-                    <button type="button" class="btn btn-primary">SUBMIT</button>
+                    <textarea class="form-control" rows="3"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
+                    <button type="button" class="btn btn-primary" style="margin-top: 15px;">SUBMIT</button>
                 </div>
             </div>
         </div>
@@ -68,7 +82,13 @@
         <div class="panel panel-default">
             <div class="panel-heading">Usage</div>
             <div class="panel-body">
-                <img class="img-responsive" src="http://de.nr-apps.com/store/media/catalog/product/cache/4/image/780x390/9df78eab33525d08d6e5fb8d27136e95/e/a/easylog_03.png">
+                <?php if ('' != $baseTranslation->getScreenPath()): ?>
+                    <a href="<?php echo $this->basePath('usages/' . $baseTranslation->getScreenPath()) ?>" target="_blank">
+                    <img class="img-responsive" src="<?php echo $this->basePath('usages/' . $baseTranslation->getScreenPath()) ?>" />
+                    </a>
+                <?php else: ?>
+                    <p>No image for usage available.</p>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -76,9 +96,9 @@
             <div class="panel-heading">Navigation</div>
             <div class="panel-body">
                 <div class="btn-group">
-                    <a class="btn btn-default" href="">Previous translation</a>
-                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => 'FIXME'))) ?>">Back to overall view list</a>
-                    <a class="btn btn-default" href="">Next translation</a>
+                    <!--a class="btn btn-default" href="">Previous translation</a-->
+                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => $currentLocale))) ?>">Back to overall view list</a>
+                    <!--a class="btn btn-default" href="">Next translation</a-->
                 </div>
 
             </div>

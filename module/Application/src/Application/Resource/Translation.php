@@ -81,6 +81,47 @@ class Translation extends Base {
         return $entities;
     }
 
+    /**
+     * get translated strings of base translation ordered by locale
+     *
+     * @param int $baseId
+     * @return array of Translation
+     */
+    public function fetchByBaseId($baseId)
+    {
+        $sql = new Sql($this->getAdapter());
+        $select = $sql->select($this->table);
+        $select->where(array('base_id' => $baseId));
+        $select->order('locale ASC');
+
+        $statement  = $sql->prepareStatementForSqlObject($select);
+
+        $resultSet = $statement->execute();
+        //$entities = $this->_prepareCollection($resultSet);
+        $languages = array();
+        foreach ($resultSet as $row) {
+            $locale = $row['locale'];
+            $languages[$locale] = new Model\Translation(array(
+                'id'                   => $row['id'],
+                'baseId'               => $row['base_id'],
+                'locale'               => $row['locale'],
+                'currentTranslation'   => $row['current_translation'],
+                'suggestedTranslation' => $row['suggested_translation'],
+                'unclearTranslation'   => $row['unclear_translation'],
+            ));
+        }
+        $supportedLocale = new SupportedLocale($this->adapter);
+        $supportedLocale = $supportedLocale->fetchAll();
+
+        foreach ($supportedLocale as $locale) {
+            if (!array_key_exists($locale,$languages)) {
+                $languages[$locale] = new Model\Translation();
+            }
+        }
+
+        return $languages;
+    }
+
 
 
     public function getTranslation($id) {

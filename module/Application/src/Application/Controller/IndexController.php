@@ -41,17 +41,27 @@ class IndexController extends AbstractActionController
      */
     protected $_messages = array( /* type => array (message) */ );
 
+    /**
+     * @var string - current locale choosed by user
+     */
+    protected $_currentLocale = self::DEFAULT_LOCALE;
+
+
+    public function init()
+    {
+        if ($this->params()->fromQuery('locale')) {
+            $this->_currentLocale = $this->params()->fromQuery('locale');
+        }
+    }
 
     public function indexAction()  // Translation grid
     {
+        $this->init();
+
         // init grid
-        $currentLocale = self::DEFAULT_LOCALE;
         $currentFile = null;
         $currentFilterUnclear = (bool)$this->params()->fromQuery('filter_unclear_translation');
 
-        if ($this->params()->fromQuery('locale')) {
-            $currentLocale = $this->params()->fromQuery('locale');
-        }
         if ($this->params()->fromQuery('file')) {
             $currentFile = (array)$this->params()->fromQuery('file');
         }
@@ -113,10 +123,10 @@ class IndexController extends AbstractActionController
         // prepare view
         $view =  new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
-            'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile($currentLocale, $currentFile, $currentFilterUnclear),
+            'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile($this->_currentLocale, $currentFile, $currentFilterUnclear),
             'translationBase'      => $this->getResourceTranslationBase()->fetchAll(),
             'translationFiles'     => $this->getResourceTranslationBase()->getTranslationFileNames(),
-            'currentLocale'        => $currentLocale,
+            'currentLocale'        => $this->_currentLocale,
             'currentFile'          => (array)$currentFile,
             'currentFilterUnclear' => $currentFilterUnclear,
             'messages'             => $this->_messages,
@@ -127,11 +137,18 @@ class IndexController extends AbstractActionController
 
     public function editAction()  // Translation detail
     {
-        var_dump($this->params('base_id'));
-        var_dump($this->params()->fromQuery('locale'));
+        $this->init();
+
+        $baseId = $this->params('base_id');
+        $baseTranslation = $this->getResourceTranslationBase()->getTranslationBase($baseId);
+        $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);
 
         return new ViewModel(array(
-
+            'supportedLocales'     => $this->getSupportedLocales(),
+            'currentLocale'        => $this->_currentLocale,
+            'messages'             => $this->_messages,
+            'baseTranslation'      => $baseTranslation,
+            'translations'         => $translations,
         ));
     }
 

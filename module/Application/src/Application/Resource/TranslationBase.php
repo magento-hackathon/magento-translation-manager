@@ -31,17 +31,17 @@ class TranslationBase extends Base {
         return $entities;
     }
 
-    public function getTranslationBase($id) {
-        $row = $this->select(array('id' => (int) $id))->current();
+    public function getTranslationBase($baseId) {
+        $row = $this->select(array('base_id' => (int) $baseId))->current();
         if (!$row)
             return false;
 
         $translationBase = new Model\TranslationBase(array(
-            'base_id'          => $row->base_id,
-            'translation_file' => $row->translation_file,
-            'origin_source'    => $row->origin_source,
-            'not_in_use'       => $row->not_in_use,
-            'screen_path'      => $row->screen_path,
+            'baseId'          => $row->base_id,
+            'translationFile' => $row->translation_file,
+            'originSource'    => $row->origin_source,
+            'notInUse'        => $row->not_in_use,
+            'screenPath'      => $row->screen_path,
         ));
         return $translationBase;
     }
