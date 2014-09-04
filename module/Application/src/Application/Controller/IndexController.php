@@ -139,6 +139,35 @@ class IndexController extends AbstractActionController
     {
         $this->init();
 
+        // save data
+        if ($this->params()->fromPost('rowid')) {
+            try {
+                $translationId = $this->params()->fromPost('translation_id');
+                $translation = null;
+                if ('' != $translationId) {
+                    $translation = $this->getResourceTranslation()->getTranslation($translationId);
+                } else {
+                    $translation = new Translation();
+                }
+                $unclearTranslation = $this->params()->fromPost('unclear_translation') ? true : false;
+
+                $translation->setBaseId($this->params()->fromPost('base_id'));
+                $translation->setLocale($this->params()->fromPost('translation_locale'));
+                $translation->setSuggestedTranslation($this->params()->fromPost('suggested_translation'));
+                $translation->setUnclearTranslation($unclearTranslation);
+                $success = $this->getResourceTranslation()->saveTranslation($translation);
+
+                if (false == $success) {
+                    $this->addMessage('No changes.', self::MESSAGE_INFO);
+                } else {
+                    $this->addMessage(sprintf('Element saved successfully (element %d)', $success), self::MESSAGE_SUCCESS);
+                }
+            } catch(\Exception $e) {
+                $this->addMessage('Error saving element', self::MESSAGE_ERROR);
+            }
+        }
+
+        // prepare output
         $baseId = $this->params('base_id');
         $baseTranslation = $this->getResourceTranslationBase()->getTranslationBase($baseId);
         $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);

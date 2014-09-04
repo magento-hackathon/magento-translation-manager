@@ -46,36 +46,48 @@ use Application\Model\Translation;
 
 <div class="row">
     <div class="col-md-4">
+        <form action="" method="post">
+            <input type="hidden" name="translation_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
+            <input type="hidden" name="base_id" value="<?php echo $baseTranslation->getBaseId() ?>" />
+            <input type="hidden" name="translation_id" value="<?php echo $translations[$currentLocale]->getId() ?>" />
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <strong>Origin source</strong><br/>
-                <?php if ((bool)$baseTranslation->getNotInUse()): ?>
-                <span class="label label-danger">Not used anymore</span>
-                <?php endif; ?>
-            </div>
-            <div class="panel-body">
-                <?php echo $this->escapeHtml($baseTranslation->getOriginSource()); ?>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>Current translation</strong></div>
-            <div class="panel-body">
-                <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading"><strong>New suggested translation</strong> (<?php echo $currentLocale ?>)</div>
-            <div class="panel-body">
-                <div class="input-group">
-                    <textarea class="form-control" rows="3"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
-                    <button type="button" class="btn btn-primary" style="margin-top: 15px;">SUBMIT</button>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong>Origin source</strong><br/>
+                    <?php if ((bool)$baseTranslation->getNotInUse()): ?>
+                    <span class="label label-danger">Not in use anymore</span>
+                    <?php endif; ?>
+                </div>
+                <div class="panel-body">
+                    <?php echo $this->escapeHtml($baseTranslation->getOriginSource()); ?>
                 </div>
             </div>
-        </div>
 
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Current translation</strong> (<?php echo $currentLocale ?>)</div>
+                <div class="panel-body">
+                    <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Unclear translation</strong></div>
+                <div class="panel-body">
+                    <?php $unclearSelected = (bool)$translations[$currentLocale]->getUnclearTranslation() ?>
+                    <input type="checkbox" name="unclear_translation" value="1" <?php if ($unclearSelected) echo 'selected="selected"' ?>/> is unclear translation
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>New suggested translation</strong> (<?php echo $currentLocale ?>)</div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <textarea class="form-control" rows="3" name="suggested_translation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
+                        <button type="submit" value="row<?php echo $translations[$currentLocale]->getId() ?>" name="rowid" class="btn btn-primary" style="margin-top: 15px;">Save entry</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="col-md-8">
 
