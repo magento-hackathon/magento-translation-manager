@@ -74,7 +74,7 @@ use Application\Model\Translation;
                 <div class="panel-heading"><strong>Unclear translation</strong></div>
                 <div class="panel-body">
                     <?php $unclearSelected = (bool)$translations[$currentLocale]->getUnclearTranslation() ?>
-                    <input type="checkbox" name="unclear_translation" value="1" <?php if ($unclearSelected) echo 'selected="selected"' ?>/> is unclear translation
+                    <input type="checkbox" name="unclear_translation" value="1" <?php if ($unclearSelected) echo 'checked="checked"' ?>/> is unclear translation
                 </div>
             </div>
 
