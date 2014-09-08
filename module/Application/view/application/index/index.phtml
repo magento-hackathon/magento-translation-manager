@@ -94,12 +94,11 @@
                         <th>New suggested translation<th>
                         <th><th>
                     </tr>
-                    <?php $rowNumber = 0; ?>
-                    <?php foreach ($translations as $id => $translation): $rowNumber++; ?>
+                    <?php foreach ($translations as $id => $translation): ?>
                         <?php /* @var $translation \Application\Model\Translation */ ?>
                         <?php /* @var $base \Application\Model\TranslationBase */ ?>
                         <?php $base = $translationBase[$translation['base_id']] ?>
-                        <?php $rowName = 'row' . $rowNumber; ?>
+                        <?php $rowName = 'row' . $translation['base_id']; ?>
                         <tr id="<?php echo $rowName ?>">
                             <td><?php echo $this->escapeHtml($base ->getOriginSource()) ?><td>
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
@@ -122,7 +121,6 @@
                     <?php endforeach; ?>
 
                 </table>
-                <input type="hidden" name="elements_in_form" value="<?php echo $rowNumber ?>" />
                 <button type="submit" value="all" name="rowid" class="btn btn-primary">Save all</button>
             </form>
         </div>

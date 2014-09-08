@@ -36,7 +36,7 @@ class Translation extends Base {
 
     public function fetchAll() {
         $resultSet = $this->select(function (Select $select) {
-            $select->order('id ASC');
+            $select->order('base_id ASC');
         });
         $entities = $this->_prepareCollection($resultSet);
 

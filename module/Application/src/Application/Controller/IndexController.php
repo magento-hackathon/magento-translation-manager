@@ -114,7 +114,7 @@ class IndexController extends AbstractActionController
                     if (false == $success) {
                         $this->addMessage('No changes.', self::MESSAGE_INFO);
                     } else {
-                        $this->addMessage(sprintf('Element saved successfully (element %d)', $success), self::MESSAGE_SUCCESS);
+                        $this->addMessage(sprintf('Element saved successfully (element #%d)', $success), self::MESSAGE_SUCCESS);
                     }
                 } catch(\Exception $e) {
                     $this->addMessage('Error saving element', self::MESSAGE_ERROR);
