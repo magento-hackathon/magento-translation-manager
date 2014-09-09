@@ -141,39 +141,63 @@ class IndexController extends AbstractActionController
     public function editAction()  // Translation detail
     {
         $this->init();
+        $baseId = $this->params('base_id');
+        $baseTranslation = $this->getResourceTranslationBase()->getTranslationBase($baseId);
 
         // save data
         if ($this->params()->fromPost('rowid')) {
-            try {
-                $translationId = $this->params()->fromPost('translation_id');
-                $translation = null;
-                if ('' != $translationId) {
-                    $translation = $this->getResourceTranslation()->getTranslation($translationId);
-                } else {
-                    $translation = new Translation();
+            // split POST params into rows
+            $formRows = array( /* rowid => array(field => value) */ );
+            $postParams = $this->params()->fromPost();
+            foreach ($postParams as $postKey => $postValue) {
+                if (preg_match('@(row.{5})_(.+)@', $postKey, $matches)) {
+                    $formRows[$matches[1]][$matches[2]] = $postValue;
                 }
-                $unclearTranslation = $this->params()->fromPost('unclear_translation') ? true : false;
+            }
 
-                $translation->setBaseId($this->params()->fromPost('base_id'));
-                $translation->setLocale($this->params()->fromPost('translation_locale'));
-                $translation->setSuggestedTranslation($this->params()->fromPost('suggested_translation'));
-                $translation->setUnclearTranslation($unclearTranslation);
-                $success = $this->getResourceTranslation()->saveTranslation($translation);
 
-                if (false == $success) {
+            // decide if one or all elements should be saved
+            if ('all' == $this->params()->fromPost('rowid')) {
+                $errors = 0;
+                $elementsModified = 0;
+                foreach ($formRows as $row) {
+                    try {
+                        $row['baseId'] = $baseTranslation->getBaseId();
+                        $modified = $this->saveTranslationElement($row);
+                        if (false !== $modified) {
+                            $elementsModified++;
+                        }
+                    } catch(\Exception $e) {
+                        $errors++;
+                    }
+                }
+
+                if (0 < $errors) {
+                    $this->addMessage(sprintf('Error saving %d elements', $errors), self::MESSAGE_ERROR);
+                }
+                if (0 < $elementsModified) {
+                    $this->addMessage(sprintf('%d elements modified successfully', $elementsModified), self::MESSAGE_SUCCESS);
+                }
+                if (0 == $elementsModified && 0 == $errors) {
                     $this->addMessage('No changes.', self::MESSAGE_INFO);
-                } else {
-                    $this->addMessage(sprintf('Element saved successfully (element %d)', $success), self::MESSAGE_SUCCESS);
                 }
-            } catch(\Exception $e) {
-                $this->addMessage('Error saving element', self::MESSAGE_ERROR);
+            } else {
+                $rowId = $this->params()->fromPost('rowid');
+                $formRows[$rowId]['baseId'] = $baseTranslation->getBaseId();
+                try {
+                    $success = $this->saveTranslationElement($formRows[$rowId]);
+
+                    if (false == $success) {
+                        $this->addMessage('No changes.', self::MESSAGE_INFO);
+                    } else {
+                        $this->addMessage(sprintf('Element saved successfully (element #%d)', $success), self::MESSAGE_SUCCESS);
+                    }
+                } catch(\Exception $e) {
+                    $this->addMessage('Error saving element', self::MESSAGE_ERROR);
+                }
             }
         }
 
-        // prepare output
-        $baseId = $this->params('base_id');
-        $baseTranslation = $this->getResourceTranslationBase()->getTranslationBase($baseId);
-        $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);
 
         // prepare previous and next item
         $allBaseIds = $this->getResourceTranslationBase()->fetchIds();
@@ -188,6 +212,7 @@ class IndexController extends AbstractActionController
             $nextKey = 0;
         }
 
+        $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);
         return new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
             'currentLocale'        => $this->_currentLocale,

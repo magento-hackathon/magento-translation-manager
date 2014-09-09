@@ -85,7 +85,7 @@ class Translation extends Base {
      * get translated strings of base translation ordered by locale
      *
      * @param int $baseId
-     * @return array of Translation
+     * @return array of Translation (index = locale)
      */
     public function fetchByBaseId($baseId)
     {
