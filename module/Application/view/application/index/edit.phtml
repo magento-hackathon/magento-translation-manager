@@ -9,6 +9,8 @@ use Application\Model\Translation;
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
  * @var array $translations of Translation with index locale
+ * @var int $previousItemId
+ * @var int $nextItemId
  */
 //var_dump($translations);
 ?>
@@ -81,7 +83,7 @@ use Application\Model\Translation;
             <div class="panel panel-default">
                 <div class="panel-heading"><strong>New suggested translation</strong> (<?php echo $currentLocale ?>)</div>
                 <div class="panel-body">
-                    <div class="input-group">
+                    <div class="input-group col-md-12">
                         <textarea class="form-control" rows="3" name="suggested_translation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
                         <button type="submit" value="row<?php echo $translations[$currentLocale]->getId() ?>" name="rowid" class="btn btn-primary" style="margin-top: 15px;">Save entry</button>
                     </div>
@@ -92,7 +94,19 @@ use Application\Model\Translation;
     <div class="col-md-8">
 
         <div class="panel panel-default">
-            <div class="panel-heading">Usage</div>
+            <div class="panel-heading"><strong>Navigation</strong></div>
+            <div class="panel-body">
+                <div class="btn-group">
+                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</a>
+                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => $currentLocale))) ?>">Back to overall view list</a>
+                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><strong>Usage</strong></div>
             <div class="panel-body">
                 <?php if ('' != $baseTranslation->getScreenPath()): ?>
                     <a href="<?php echo $this->basePath('usages/' . $baseTranslation->getScreenPath()) ?>" target="_blank">
@@ -101,18 +115,6 @@ use Application\Model\Translation;
                 <?php else: ?>
                     <img class="img-responsive" src="<?php echo $this->basePath('img/fallback-no-screenshot.png') ?>" />
                 <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-heading">Navigation</div>
-            <div class="panel-body">
-                <div class="btn-group">
-                    <!--a class="btn btn-default" href="">Previous translation</a-->
-                    <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => $currentLocale))) ?>">Back to overall view list</a>
-                    <!--a class="btn btn-default" href="">Next translation</a-->
-                </div>
-
             </div>
         </div>
 

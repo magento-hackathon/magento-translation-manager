@@ -175,12 +175,27 @@ class IndexController extends AbstractActionController
         $baseTranslation = $this->getResourceTranslationBase()->getTranslationBase($baseId);
         $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);
 
+        // prepare previous and next item
+        $allBaseIds = $this->getResourceTranslationBase()->fetchIds();
+        $currentKey = array_search($baseId, $allBaseIds);
+        $previousKey = $currentKey - 1;
+        $nextKey = $currentKey + 1;
+        $maxKey = max(array_keys($allBaseIds));
+        if (0 == $currentKey) {
+            $previousKey = $maxKey;
+        }
+        if ($maxKey == $currentKey) {
+            $nextKey = 0;
+        }
+
         return new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
             'currentLocale'        => $this->_currentLocale,
             'messages'             => $this->_messages,
             'baseTranslation'      => $baseTranslation,
             'translations'         => $translations,
+            'previousItemId'       => $allBaseIds[$previousKey],
+            'nextItemId'           => $allBaseIds[$nextKey],
         ));
     }
 

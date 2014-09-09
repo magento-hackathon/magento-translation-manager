@@ -8,12 +8,14 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
 use Application\Model;
 
-class TranslationBase extends Base {
+class TranslationBase extends Base
+{
 
     protected $table = 'translation_base';
 
 
-    public function fetchAll() {
+    public function fetchAll()
+    {
         $resultSet = $this->select(function (Select $select) {
             $select->order('base_id ASC');
         });
@@ -31,7 +33,30 @@ class TranslationBase extends Base {
         return $entities;
     }
 
-    public function getTranslationBase($baseId) {
+    /**
+     * @return array
+     */
+    public function fetchIds()
+    {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select($this->table);
+        $select->columns(array('base_id'));
+        $select->order(array('base_id' => 'ASC'));
+
+        $statement  = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+
+        $ids = array();
+
+        foreach ($resultSet as $row) {
+            $ids[] = $row['base_id'];
+        }
+
+        return $ids;
+    }
+
+    public function getTranslationBase($baseId)
+    {
         $row = $this->select(array('base_id' => (int) $baseId))->current();
         if (!$row)
             return false;
@@ -46,7 +71,8 @@ class TranslationBase extends Base {
         return $translationBase;
     }
 
-    public function saveTranslation(Model\TranslationBase $translation) {
+    public function saveTranslation(Model\TranslationBase $translation)
+    {
         $data = array(
             'base_id'          => $translation->getBaseId(),
             'translation_file' => $translation->getTranslationFile(),
@@ -71,7 +97,8 @@ class TranslationBase extends Base {
             return false;
     }
 
-    public function deleteTranslationBase($baseId) {
+    public function deleteTranslationBase($baseId)
+    {
         return $this->delete(array('base_id' => (int) $baseId));
     }
 
