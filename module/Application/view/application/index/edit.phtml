@@ -57,7 +57,7 @@ use Application\Model\Translation;
                 <div class="panel-heading">
                     <strong>Origin source</strong><br/>
                     <?php if ((bool)$baseTranslation->getNotInUse()): ?>
-                    <span class="label label-danger">Not in use anymore</span>
+                    <span class="label label-danger pull-right">Not in use anymore</span>
                     <?php endif; ?>
                 </div>
                 <div class="panel-body">
@@ -66,17 +66,19 @@ use Application\Model\Translation;
             </div>
 
             <div class="panel panel-default">
-                <div class="panel-heading"><strong>Current translation</strong> (<?php echo $currentLocale ?>)</div>
+                <?php $unclearSelected = (bool)$translations[$currentLocale]->getUnclearTranslation() ?>
+                <div class="panel-heading">
+                    <strong>Current translation</strong> (<?php echo $currentLocale ?>)
+                    <?php if ($unclearSelected): ?>
+                        <i class="glyphicon glyphicon-question-sign unclear pull-right" title="unclear translation"></i>
+                    <?php endif; ?>
+                </div>
                 <div class="panel-body">
                     <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
-                </div>
-            </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>Unclear translation</strong></div>
-                <div class="panel-body">
-                    <?php $unclearSelected = (bool)$translations[$currentLocale]->getUnclearTranslation() ?>
-                    <input type="checkbox" name="<?php echo $rowName ?>_unclearTranslation" value="1" <?php if ($unclearSelected) echo 'checked="checked"' ?>/> is unclear translation
+                    <?php if ($unclearSelected): ?>
+                        <hr />
+                        <input type="checkbox" name="<?php echo $rowName ?>_unclearTranslation" value="1" <?php if ($unclearSelected) echo 'checked="checked"' ?>/> is unclear translation
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -129,7 +131,7 @@ use Application\Model\Translation;
                         <tr>
                             <th>Locale<th>
                             <th>Current translation<th>
-                            <th><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
+                            <th colspan="2" class="text-center"><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
                             <th>New suggested translation<th>
                             <th><th>
                         </tr>
@@ -140,6 +142,11 @@ use Application\Model\Translation;
                             <tr id="<?php echo $rowName ?>">
                                 <td><?php echo $this->escapeHtml($locale) ?><td>
                                 <td><?php echo $this->escapeHtml($translation->getCurrentTranslation()) ?><td>
+                                <td>
+                                    <?php if ((bool)$translation->getUnclearTranslation()): ?>
+                                        <i class="glyphicon glyphicon-question-sign unclear" title="unclear translation"></i>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation->getUnclearTranslation()) ? 'checked="checked"':'' ?>>
                                 </td>
@@ -159,7 +166,23 @@ use Application\Model\Translation;
                         <?php endforeach; ?>
 
                     </table>
-                    <button type="submit" value="all" name="rowid" class="btn btn-primary">Save all</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>Navigation</strong></div>
+                <div class="panel-body">
+                    <div class="btn-group">
+                        <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</a>
+                        <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'index'), array('query' => array('locale' => $currentLocale))) ?>">Back to overall view list</a>
+                        <a class="btn btn-default" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</a>
+                    </div>
+
+                    <button type="submit" value="all" name="rowid" class="btn btn-primary pull-right" id="save-all-button">Save all</button>
                 </div>
             </div>
         </div>

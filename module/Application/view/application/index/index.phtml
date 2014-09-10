@@ -90,7 +90,7 @@
                     <tr>
                         <th>Origin source<th>
                         <th>Current translation<th>
-                        <th><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
+                        <th colspan="2" class="text-center"><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
                         <th>New suggested translation<th>
                         <th><th>
                     </tr>
@@ -102,6 +102,11 @@
                         <tr id="<?php echo $rowName ?>">
                             <td><?php echo $this->escapeHtml($base ->getOriginSource()) ?><td>
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
+                            <td>
+                                <?php if ((bool)$translation['unclear_translation']): ?>
+                                    <i class="glyphicon glyphicon-question-sign unclear" title="unclear translation"></i>
+                                <?php endif; ?>
+                            </td>
                             <td>
                                 <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>>
                             </td>
