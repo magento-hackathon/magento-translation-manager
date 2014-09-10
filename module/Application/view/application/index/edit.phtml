@@ -55,7 +55,7 @@ use Application\Model\Translation;
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong>Origin source</strong><br/>
+                    <strong>Origin source</strong>
                     <?php if ((bool)$baseTranslation->getNotInUse()): ?>
                     <span class="label label-danger pull-right">Not in use anymore</span>
                     <?php endif; ?>
@@ -68,22 +68,27 @@ use Application\Model\Translation;
             <div class="panel panel-default">
                 <?php $unclearSelected = (bool)$translations[$currentLocale]->getUnclearTranslation() ?>
                 <div class="panel-heading">
-                    <strong>Current translation</strong> (<?php echo $currentLocale ?>)
+                    <strong>Current translation</strong>
+                    <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
+                    <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                     <?php if ($unclearSelected): ?>
-                        <i class="glyphicon glyphicon-question-sign unclear pull-right" title="unclear translation"></i>
+                        <i class="glyphicon glyphicon-question-sign unclear " title="unclear translation"></i>
                     <?php endif; ?>
                 </div>
                 <div class="panel-body">
                     <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
-                    <?php if ($unclearSelected): ?>
-                        <hr />
-                        <input type="checkbox" name="<?php echo $rowName ?>_unclearTranslation" value="1" <?php if ($unclearSelected) echo 'checked="checked"' ?>/> is unclear translation
-                    <?php endif; ?>
+                    <hr />
+                    <input type="checkbox" name="<?php echo $rowName ?>_unclearTranslation" id="<?php echo $rowName ?>_unclearTranslation" value="1" <?php if ($unclearSelected) echo 'checked="checked"' ?>/>
+                    <label style="font-weight: normal" for="<?php echo $rowName ?>_unclearTranslation">translation is unclear</label>
                 </div>
             </div>
 
             <div class="panel panel-default">
-                <div class="panel-heading"><strong>New suggested translation</strong> (<?php echo $currentLocale ?>)</div>
+                <div class="panel-heading">
+                    <strong>New suggested translation</strong>
+                    <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
+                    <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
+                </div>
                 <div class="panel-body">
                     <div class="input-group col-md-12">
                         <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
