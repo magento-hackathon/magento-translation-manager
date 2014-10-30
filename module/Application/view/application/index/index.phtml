@@ -119,7 +119,7 @@
                                     <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['id'])?>" />
                                     <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-floppy-disk"></span></button>
                                     &nbsp;
-                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="Edit entry" href="<?php echo $this->url('home', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="Edit entry" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
                                 </div>
                             <td>
                         </tr>
