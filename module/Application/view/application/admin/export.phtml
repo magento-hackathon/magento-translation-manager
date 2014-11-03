@@ -1,0 +1,23 @@
+<?php
+/**
+ * @var $this Zend\View\Renderer\PhpRenderer
+ *
+ * @var array $downloadFiles - [path|locale|filename] strings
+ */
+?>
+<?php if (count($downloadFiles)): ?>
+    <p>Please download the following files:</p>
+<?php else: ?>
+    <p>No files exported.</p>
+<?php endif; ?>
+
+<ul>
+    <?php foreach ($downloadFiles as $file): ?>
+    <li><a href="<?php echo $this->serverUrl($file['path']) ?>"><?php echo $file['locale']?> - <?php echo $file['filename'] ?></a></li>
+    <?php endforeach; ?>
+</ul>
+
+<p><a href="<?php echo $this->url('admin') ?>">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+    Back to admin
+</a></p>

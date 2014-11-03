@@ -1,1 +1,45 @@
-admin dashboard
+<?php
+/**
+ * @var $this Zend\View\Renderer\PhpRenderer
+ *
+ * @var array $supportedLocales of string
+ * @var array $translations of Translation
+ * @var array $translationBase of TranslationBase
+ * @var array $translationFiles of string
+ */
+?>
+<h2>Admin dashboard</h2>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Export CSV</div>
+    <div class="panel-body">
+        <form action="<?php echo $this->url('admin', array('action' => 'export')) ?>" method="post" role="form">
+            <div class="form-group">
+                <label for="translationFile">Translation file</label>
+                <select class="form-control" id="translationFile" name="translation_file[]" multiple="multiple">
+                    <?php foreach ($translationFiles as $fileName): ?>
+                        <option value="<?php echo $fileName ?>"><?php echo $fileName //TODO escape ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="language">Language</label>
+                <select class="form-control" id="language" name="locale[]" multiple="multiple">
+                    <?php foreach ($supportedLocales as $locale): ?>
+                        <option value="<?php echo $locale ?>"><?php echo $locale ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exportCsv">export to</label>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="export_type" id="exportCsv" value="csv" disabled="disabled" checked="checked" /> CSV (Download)<br/>
+                        <input type="checkbox" name="export_type" value="git" /> Git (Commit)<br/>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default">Start export</button>
+        </form>
+    </div>
+</div>

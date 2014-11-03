@@ -1,46 +1,12 @@
 <?php
-/**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
 
 namespace Application\Controller;
 
 use Application\Model\Translation;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class IndexController extends AbstractActionController
+class IndexController extends Base
 {
-    const DEFAULT_LOCALE = 'de_DE';
-
-    const MESSAGE_INFO = 'info';
-    const MESSAGE_WARN = 'warning';
-    const MESSAGE_ERROR = 'danger';
-    const MESSAGE_SUCCESS = 'success';
-
-    /**
-     * @var $_translationBaseTable \Application\Resource\TranslationBase
-     */
-    protected $_translationBaseTable = null;
-    /**
-     * @var $_translationBaseTable \Application\Resource\Translation
-     */
-    protected $_translationTable = null;
-
-    /**
-     * @var array - supported Locales
-     */
-    protected $_supportedLocale = null;
-
-    /**
-     * @var array - system messages
-     */
-    protected $_messages = array( /* type => array (message) */ );
-
     /**
      * @var string - current locale choosed by user
      */
@@ -250,63 +216,5 @@ class IndexController extends AbstractActionController
         $success = $this->getResourceTranslation()->saveTranslation($translation);
 
         return $success;
-    }
-
-
-    /**
-     * @return array
-     */
-    protected function getSupportedLocales()
-    {
-        if (null == $this->_supportedLocale) {
-            $sm = $this->getServiceLocator();
-            /* @var $resourceModel \Application\Resource\SupportedLocale */
-            $resourceModel = $sm->get('Application\Resource\SupportedLocale');
-            $this->_supportedLocale = $resourceModel->fetchAll();
-        }
-        return $this->_supportedLocale;
-    }
-
-    /**
-     * get translation resource
-     *
-     * @return \Application\Resource\Translation
-     */
-    protected function getResourceTranslation()
-    {
-        if (null == $this->_translationTable) {
-            $sm = $this->getServiceLocator();
-            /* @var $resourceModel \Application\Resource\Translation */
-            $resourceModel = $sm->get('Application\Resource\Translation');
-            $this->_translationTable = $resourceModel;
-        }
-        return $this->_translationTable;
-    }
-
-    /**
-     * get translation base resource
-     *
-     * @return \Application\Resource\TranslationBase
-     */
-    protected function getResourceTranslationBase()
-    {
-        if (null == $this->_translationBaseTable) {
-            $sm = $this->getServiceLocator();
-            /* @var $resourceModel \Application\Resource\TranslationBase */
-            $resourceModel = $sm->get('Application\Resource\TranslationBase');
-            $this->_translationBaseTable = $resourceModel;
-        }
-        return $this->_translationBaseTable;
-    }
-
-    /**
-     * add message to system message queue
-     *
-     * @param $message - message to note
-     * @param string $level - message leven eg.g error or info
-     */
-    protected function addMessage($message, $level = self::MESSAGE_INFO)
-    {
-        $this->_messages[$level][] = $message;
     }
 }
