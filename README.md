@@ -1,3 +1,8 @@
+This repository includes translation tool for the Magento localized editions.
+
+----------------------------------------------------------------------------------------------------------------
+
+
 ZendSkeletonApplication
 =======================
 
