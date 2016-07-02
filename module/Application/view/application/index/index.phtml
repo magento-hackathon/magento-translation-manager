@@ -90,7 +90,7 @@
                     <tr>
                         <th>Origin source<th>
                         <th>Current translation<th>
-                        <th colspan="2" class="text-center"><span class="glyphicon glyphicon-cloud" title="unclear translation"></span></th>
+                        <th colspan="2" class="text-center"><span title="unclear translation">Status</span></th>
                         <th>New suggested translation<th>
                         <th><th>
                     </tr>
@@ -104,11 +104,12 @@
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?><td>
                             <td>
                                 <?php if ((bool)$translation['unclear_translation']): ?>
-                                    <i class="glyphicon glyphicon-question-sign unclear" title="unclear translation"></i>
+                                    <i class="glyphicon glyphicon-exclamation-sign unclear" title="unclear translation"></i>
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>>
+                                <input type="radio" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>>
+                                <!--<input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>> -->
                             </td>
                             <td class="suggested-translation">
                                 <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="" />
@@ -117,16 +118,16 @@
                                 <div style="min-width: 125px">
                                     <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
                                     <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>" />
-                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-plus"></span></button>
                                     &nbsp;
-                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="Edit entry" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="See Details" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-search"></span></a>
                                 </div>
                             <td>
                         </tr>
                     <?php endforeach; ?>
 
                 </table>
-                <button type="submit" value="all" name="rowid" class="btn btn-primary">Save all</button>
+                <button type="submit" value="all" name="rowid" class="btn btn-primary">Submit all</button>
             </form>
         </div>
     </div>
