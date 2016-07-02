@@ -93,7 +93,7 @@ class IndexController extends Base
             'supportedLocales'     => $this->getSupportedLocales(),
             'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile($this->_currentLocale, $currentFile, $currentFilterUnclear),
             'translationBase'      => $this->getResourceTranslationBase()->fetchAll(),
-            'translationFiles'     => $this->getResourceTranslationBase()->getTranslationFileNames(),
+            'translationFiles'     => $this->getResourceTranslationFile()->fetchAll(),
             'currentLocale'        => $this->_currentLocale,
             'currentFile'          => (array)$currentFile,
             'currentFilterUnclear' => $currentFilterUnclear,

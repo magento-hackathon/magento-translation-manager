@@ -111,7 +111,7 @@
                                 <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation['unclear_translation']) ? 'checked="checked"':'' ?>>
                             </td>
                             <td class="suggested-translation">
-                                <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $this->escapeHtmlAttr($translation['suggested_translation']) ?>" />
+                                <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="" />
                             <td>
                             <td>
                                 <div style="min-width: 125px">

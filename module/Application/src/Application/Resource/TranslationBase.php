@@ -101,28 +101,4 @@ class TranslationBase extends Base
     {
         return $this->delete(array('base_id' => (int) $baseId));
     }
-
-    /**
-     * select all possible translation files out of translation base table
-     *
-     * @return array of strings
-     */
-    public function getTranslationFileNames()
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select($this->table);
-        $select->columns(array('translation_file' => new Expression('DISTINCT(translation_file)')));
-
-        $statement  = $sql->prepareStatementForSqlObject($select);
-        $resultSet = $statement->execute();
-
-        $fileNames = array();
-
-        foreach ($resultSet as $row) {
-            $fileNames[] = $row['translation_file'];
-        }
-
-        return $fileNames;
-    }
-
 }

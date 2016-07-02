@@ -55,6 +55,11 @@ class Module
                     $table = new Resource\TranslationBase($dbAdapter);
                     return $table;
                 },
+                'Application\Resource\TranslationFile' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Resource\TranslationFile($dbAdapter);
+                    return $table;
+                },
             ),
         );
     }
