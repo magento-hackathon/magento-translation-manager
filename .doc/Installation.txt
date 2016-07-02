@@ -1,0 +1,31 @@
+1. git clone project
+2. create database (e.g. lme-translation) and import .doc/lme-translation.sql
+3. composer install (do reinitialisize the Zend stuff)
+4. Copy config/autoload/db.local.php.dist to config/autoload/db.local.php and control credentials
+5. open frontend
+
+Hint: There is another Repo with resulted CSV files.
+
+Example VHost:
+
+<VirtualHost *:80>
+    ServerAdmin coder@example.com
+    DocumentRoot "C:/workspace/lme-translation/htdocs/public/"
+    ServerName lme-translation.local
+    ErrorLog "logs/lme-translation.local-error.log"
+    CustomLog "logs/lme-translation.local-access.log" common
+		
+    <Directory "C:/workspace/lme-translation/htdocs/public/">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Order Deny,Allow
+        Allow from all
+		Require all granted
+		
+		php_flag log_errors on
+		php_flag display_errors on
+		php_value error_reporting E_ALL
+		
+		SetEnv APPLICATION_ENV "development"
+    </Directory>
+</VirtualHost>
