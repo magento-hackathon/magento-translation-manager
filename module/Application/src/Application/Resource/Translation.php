@@ -54,7 +54,7 @@ class Translation extends Base {
 
         $sql = new Sql($this->getAdapter());
         $select = $sql->select($this->table);
-        $select->order('id ASC');
+        $select->order('translation_id ASC');
 
         $joinCondition  = $this->table . '.base_id = translation_base.base_id ';
         $joinCondition .= " AND locale = " . $this->adapter->getPlatform()->quoteValue($locale) . ' OR locale IS NULL ';
@@ -62,7 +62,12 @@ class Translation extends Base {
         $select->join('translation_base', new Expression($joinCondition), '*', Select::JOIN_RIGHT);
 
         if (null != $file) {
-            $select->where(array('translation_file' => $file));
+            $select->join(
+                'translation_file',
+                'translation_base.translation_file_id = translation_file.translation_file_id',
+                '*'
+            );
+            $select->where(array('filename' => $file));
         }
 
         if (true == $filterUnclear) {
