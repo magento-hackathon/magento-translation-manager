@@ -204,7 +204,7 @@ class IndexController extends Base
 
         $translation = null;
         if (isset($element['id'])) {
-            $translation = $this->getResourceTranslation()->getTranslation($element['id']);
+            $translation = $this->getResourceTranslation()->getTranslation($element['trnaslation_id']);
             if (false == $translation) {
                 $translation = new Translation();
             }

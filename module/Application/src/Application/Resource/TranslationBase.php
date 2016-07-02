@@ -22,11 +22,11 @@ class TranslationBase extends Base
         $entities = array();
         foreach ($resultSet as $row) {
             $entity = new Model\TranslationBase(array(
-                'baseId'          => $row['base_id'],
-                'translationFile' => $row['translation_file'],
-                'originSource'    => $row['origin_source'],
-                'notInUse'        => $row['not_in_use'],
-                'screenPath'      => $row['screen_path'],
+                'baseId'            => $row['base_id'],
+                'translationFileId' => $row['translation_file_id'],
+                'originSource'      => $row['origin_source'],
+                'notInUse'          => $row['not_in_use'],
+                'screenPath'        => $row['screen_path'],
             ));
             $entities[$row['base_id']] = $entity;
         }
@@ -62,11 +62,11 @@ class TranslationBase extends Base
             return false;
 
         $translationBase = new Model\TranslationBase(array(
-            'baseId'          => $row->base_id,
-            'translationFile' => $row->translation_file,
-            'originSource'    => $row->origin_source,
-            'notInUse'        => $row->not_in_use,
-            'screenPath'      => $row->screen_path,
+            'baseId'            => $row->base_id,
+            'translationFileId' => $row->translation_file_id,
+            'originSource'      => $row->origin_source,
+            'notInUse'          => $row->not_in_use,
+            'screenPath'        => $row->screen_path,
         ));
         return $translationBase;
     }
@@ -74,11 +74,11 @@ class TranslationBase extends Base
     public function saveTranslation(Model\TranslationBase $translation)
     {
         $data = array(
-            'base_id'          => $translation->getBaseId(),
-            'translation_file' => $translation->getTranslationFile(),
-            'origin_source'    => $translation->getOriginSource(),
-            'not_in_use'       => $translation->getNotInUse(),
-            'screen_path'      => $translation->getScreenPath(),
+            'base_id'             => $translation->getBaseId(),
+            'translation_file_id' => $translation->getTranslationFileId(),
+            'origin_source'       => $translation->getOriginSource(),
+            'not_in_use'          => $translation->getNotInUse(),
+            'screen_path'         => $translation->getScreenPath(),
         );
 
         $baseId = (int) $translation->getBaseId();

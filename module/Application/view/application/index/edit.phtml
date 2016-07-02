@@ -41,7 +41,7 @@ use Application\Model\Translation;
                 <?php endforeach; ?>
             </ul>
         </div>
-        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($baseTranslation->getTranslationFile()) ?></span> <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
+        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($baseTranslation->getTranslationFileId()) ?></span> <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
     </div>
 </div>
 
@@ -51,7 +51,7 @@ use Application\Model\Translation;
             <?php $rowName = 'row' .$currentLocale; ?>
             <input type="hidden" name="base_id" value="<?php echo $baseTranslation->getBaseId() ?>" />
             <input type="hidden" name="<?php echo $rowName ?>_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
-            <input type="hidden" name="<?php echo $rowName ?>_id" value="<?php echo $translations[$currentLocale]->getId() ?>" />
+            <input type="hidden" name="<?php echo $rowName ?>_id" value="<?php echo $translations[$currentLocale]->getTranslationId() ?>" />
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -161,7 +161,7 @@ use Application\Model\Translation;
                                 <td>
                                     <div style="min-width: 125px">
                                         <input type="hidden" name="<?php echo $rowName ?>_locale" value="<?php echo $locale ?>" />
-                                        <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation->getId())?>" />
+                                        <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation->getTranslationId())?>" />
                                         <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-floppy-disk"></span></button>
                                         &nbsp;
                                         <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="Edit entry" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $baseTranslation->getBaseId()), array('query' => array('locale' => $locale))) ?>"><span class="glyphicon glyphicon-pencil"></span></a>

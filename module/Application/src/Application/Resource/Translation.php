@@ -21,7 +21,7 @@ class Translation extends Base {
         $entities = array();
         foreach ($resultSet as $row) {
             $entity = new Model\Translation(array(
-                'id'                   => $row['id'],
+                'translationId'        => $row['translation_id'],
                 'baseId'               => $row['base_id'],
                 'locale'               => $row['locale'],
                 'currentTranslation'   => $row['current_translation'],
@@ -107,11 +107,10 @@ class Translation extends Base {
         foreach ($resultSet as $row) {
             $locale = $row['locale'];
             $languages[$locale] = new Model\Translation(array(
-                'id'                   => $row['id'],
+                'translation_id'       => $row['translation_id'],
                 'baseId'               => $row['base_id'],
                 'locale'               => $row['locale'],
                 'currentTranslation'   => $row['current_translation'],
-                'suggestedTranslation' => $row['suggested_translation'],
                 'unclearTranslation'   => $row['unclear_translation'],
             ));
         }
@@ -119,7 +118,7 @@ class Translation extends Base {
         $supportedLocale = $supportedLocale->fetchAll();
 
         foreach ($supportedLocale as $locale) {
-            if (!array_key_exists($locale,$languages)) {
+            if (!array_key_exists($locale, $languages)) {
                 $languages[$locale] = new Model\Translation();
             }
         }
@@ -129,13 +128,13 @@ class Translation extends Base {
 
 
 
-    public function getTranslation($id) {
-        $row = $this->select(array('id' => (int) $id))->current();
+    public function getTranslation($translationId) {
+        $row = $this->select(array('translation_id' => (int) $translationId))->current();
         if (!$row)
             return false;
 
         $translation = new Model\Translation(array(
-            'id'                   => $row->id,
+            'translationId'        => $row->translation_id,
             'baseId'               => $row->base_id,
             'locale'               => $row->locale,
             'currentTranslation'   => $row->current_translation,
@@ -147,7 +146,7 @@ class Translation extends Base {
 
     public function saveTranslation(Model\Translation $translation) {
         $data = array(
-            'id'                    => $translation->getId(),
+            'translation_id'        => $translation->getTranslationId(),
             'base_id'               => $translation->getBaseId(),
             'locale'                => $translation->getLocale(),
             'current_translation'   => $translation->getCurrentTranslation(),
