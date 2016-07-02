@@ -47,7 +47,7 @@ ul.messages {
     list-style-type: none;
     padding: 0;
 }
-.glyphicon-question-sign.unclear {
+.glyphicon-exclamation-sign.unclear {
     font-size: 120%;
     color: #FF0000;
 }
