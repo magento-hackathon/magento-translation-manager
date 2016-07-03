@@ -151,7 +151,7 @@ class Translation extends Base {
             'unclear_translation'   => (int)$translation->getUnclearTranslation(),
         );
 
-        $id = (int) $translation->getId();
+        $id = (int) $translation->getTranslationId();
 
         if ($id == 0) {
             if (!$this->insert($data))
@@ -159,7 +159,7 @@ class Translation extends Base {
             return $this->getLastInsertValue();
 
         } elseif ($this->getTranslation($id)) {
-            if (!$this->update($data, array('id' => $id))) {
+            if (!$this->update($data, array('translation_id' => $id))) {
                 return false;
             }
             return $id;
@@ -169,8 +169,8 @@ class Translation extends Base {
         }
     }
 
-    public function deleteTranslation($id) {
-        return $this->delete(array('id' => (int) $id));
+    public function deleteTranslation($translationId) {
+        return $this->delete(array('translation_id' => (int) $translationId));
     }
 
 }

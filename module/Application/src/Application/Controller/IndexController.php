@@ -2,6 +2,7 @@
 
 namespace Application\Controller;
 
+use Application\Model\Suggestion;
 use Application\Model\Translation;
 use Zend\View\Model\ViewModel;
 
@@ -35,7 +36,6 @@ class IndexController extends Base
 
         // save form
         if ($this->params()->fromPost('rowid')) {
-            $translationLocale = $this->params()->fromPost('translation_locale');
             // split POST params into rows
             $formRows = array( /* rowid => array(field => value) */ );
             $postParams = $this->params()->fromPost();
@@ -50,9 +50,11 @@ class IndexController extends Base
                 $errors = 0;
                 $elementsModified = 0;
                 foreach ($formRows as $row) {
+                    if (empty($row['suggestedTranslation'])) {
+                        continue;
+                    }
                     try {
-                        $row['locale'] = $translationLocale;
-                        $modified = $this->saveTranslationElement($row);
+                        $modified = $this->addSuggestion((int)$row['translationId'], $row['suggestedTranslation']);
                         if (false !== $modified) {
                             $elementsModified++;
                         }
@@ -65,7 +67,7 @@ class IndexController extends Base
                     $this->addMessage(sprintf('Error saving %d elements', $errors), self::MESSAGE_ERROR);
                 }
                 if (0 < $elementsModified) {
-                    $this->addMessage(sprintf('%d elements modified successfully', $elementsModified), self::MESSAGE_SUCCESS);
+                    $this->addMessage(sprintf('%d elements saved successfully', $elementsModified), self::MESSAGE_SUCCESS);
                 }
                 if (0 == $elementsModified && 0 == $errors) {
                     $this->addMessage('No changes.', self::MESSAGE_INFO);
@@ -73,9 +75,11 @@ class IndexController extends Base
             } else {
                 $rowId = $this->params()->fromPost('rowid');
                 $jumpToRow = $rowId;
-                $formRows[$rowId]['locale'] = $translationLocale;
                 try {
-                    $success = $this->saveTranslationElement($formRows[$rowId]);
+                    $success = false;
+                    if (!empty($formRows[$rowId]['suggestedTranslation'])) {
+                        $success = $this->addSuggestion((int)$formRows[$rowId]['translationId'], $formRows[$rowId]['suggestedTranslation']);
+                    }
 
                     if (false == $success) {
                         $this->addMessage('No changes.', self::MESSAGE_INFO);
@@ -128,6 +132,9 @@ class IndexController extends Base
                 $elementsModified = 0;
                 foreach ($formRows as $row) {
                     try {
+                        if (empty($row['suggestedTranslation'])) {
+                            continue;
+                        }
                         $row['baseId'] = $baseTranslation->getBaseId();
                         $modified = $this->saveTranslationElement($row);
                         if (false !== $modified) {
@@ -151,7 +158,10 @@ class IndexController extends Base
                 $rowId = $this->params()->fromPost('rowid');
                 $formRows[$rowId]['baseId'] = $baseTranslation->getBaseId();
                 try {
-                    $success = $this->saveTranslationElement($formRows[$rowId]);
+                    $success = false;
+                    if (!empty($formRows[$rowId]['suggestedTranslation'])) {
+                        $success = $this->saveTranslationElement($formRows[$rowId]);
+                    }
 
                     if (false == $success) {
                         $this->addMessage('No changes.', self::MESSAGE_INFO);
@@ -224,4 +234,23 @@ class IndexController extends Base
 
         return $success;
     }
+
+    /**
+     * add a new suggestion
+     *
+     * @param $translationId - ID of translation
+     * @param $content - content of the suggestion
+     * @return bool - was successfully saved
+     */
+    protected function addSuggestion($translationId, $content)
+    {
+        $result = $this->getResourceSuggestion()->saveSuggestion(new Suggestion(array(
+            'suggestionId'         => null,
+            'translationId'        => (int)$translationId,
+            'suggestedTranslation' => $content,
+        )));
+
+        return boolval($result);
+    }
+
 }
