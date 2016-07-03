@@ -25,7 +25,6 @@ class Translation extends Base {
                 'baseId'               => $row['base_id'],
                 'locale'               => $row['locale'],
                 'currentTranslation'   => $row['current_translation'],
-                'suggestedTranslation' => $row['suggested_translation'],
                 'unclearTranslation'   => $row['unclear_translation'],
             ));
             $entities[$row['id']] = $entity;
@@ -138,7 +137,6 @@ class Translation extends Base {
             'baseId'               => $row->base_id,
             'locale'               => $row->locale,
             'currentTranslation'   => $row->current_translation,
-            'suggestedTranslation' => $row->suggested_translation,
             'unclearTranslation'   => $row->unclear_translation,
         ));
         return $translation;
@@ -150,7 +148,6 @@ class Translation extends Base {
             'base_id'               => $translation->getBaseId(),
             'locale'                => $translation->getLocale(),
             'current_translation'   => $translation->getCurrentTranslation(),
-            'suggested_translation' => $translation->getSuggestedTranslation(),
             'unclear_translation'   => (int)$translation->getUnclearTranslation(),
         );
 
