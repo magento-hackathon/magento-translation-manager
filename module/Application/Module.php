@@ -60,6 +60,11 @@ class Module
                     $table = new Resource\TranslationFile($dbAdapter);
                     return $table;
                 },
+                'Application\Resource\Suggestion' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $table = new Resource\Suggestion($dbAdapter);
+                    return $table;
+                },
             ),
         );
     }

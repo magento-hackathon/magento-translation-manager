@@ -10,6 +10,7 @@ use Application\Model\Translation;
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
  * @var array $translations of Translation with index locale
+ * @var array $suggestions of Suggestion with index suggestion_id
  * @var int $previousItemId
  * @var int $nextItemId
  */
@@ -109,12 +110,18 @@ use Application\Model\Translation;
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong>Existing Suggestions</strong>
+                    <strong>Existing suggestions</strong>
                     <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
                     <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                 </div>
                 <div class="panel-body">
-                    <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
+                    <?php foreach ($suggestions as $suggestionId => $suggestion): ?>
+                        <span id="suggestion_<?php echo (int)$suggestionId ?>">
+                            <?php echo $suggestion->getSuggestedTranslation() ?>
+                        </span>
+                    <?php endforeach; ?>
+
+                    <?php //echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
                 </div>
             </div>
         </div>
@@ -123,7 +130,7 @@ use Application\Model\Translation;
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong>Submit a new Suggestions</strong>
+                    <strong>Submit a new suggestion</strong>
                     <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
                     <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                 </div>
@@ -131,6 +138,8 @@ use Application\Model\Translation;
                     <div class="input-group col-md-12">
                         <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
                         <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit Suggestion</button>
+                        <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"></textarea>
+                        <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit suggestion</button>
                     </div>
                 </div>
             </div>
@@ -139,8 +148,8 @@ use Application\Model\Translation;
     <div class="row">
         <div class="col-md-12">
             <div style="margin-bottom: 25px; overflow: hidden;">
-                <button class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</button>
-                <button class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</button>
+                <a class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</a>
+                <a class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</a>
             </div>
         </div>
     </div>
@@ -180,7 +189,7 @@ use Application\Model\Translation;
                                     <!-- <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation->getUnclearTranslation()) ? 'checked="checked"':'' ?>> -->
                                 </td>
                                 <td class="suggested-translation">
-                                    <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="<?php echo $this->escapeHtmlAttr($translation->getSuggestedTranslation()) ?>" />
+                                    <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="" />
                                 <td>
                                 <td>
                                     <div style="min-width: 125px">

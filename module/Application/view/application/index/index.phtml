@@ -117,7 +117,7 @@
                             <td>
                                 <div style="min-width: 125px">
                                     <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
-                                    <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>" />
+                                    <input type="hidden" name="<?php echo $rowName?>_translationId" value="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>" />
                                     <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Save entry"><span class="glyphicon glyphicon-plus"></span></button>
                                     &nbsp;
                                     <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="See Details" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-search"></span></a>

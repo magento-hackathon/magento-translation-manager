@@ -12,8 +12,6 @@ class Translation extends Base {
     protected $_locale = null;
     /* @var string $_currentTranslation */
     protected $_currentTranslation = null;
-    /* @var string $_suggestedTranslation */
-    protected $_suggestedTranslation = null;
     /* @var string $_unclearTranslation */
     protected $_unclearTranslation = null;
 
@@ -21,7 +19,7 @@ class Translation extends Base {
         return $this->_translationId;
     }
 
-    public function setId($translationId) {
+    public function setTranslationId($translationId) {
         $this->_translationId = $translationId;
         return $this;
     }
@@ -50,15 +48,6 @@ class Translation extends Base {
 
     public function setCurrentTranslation($currentTranslation) {
         $this->_currentTranslation = $currentTranslation;
-        return $this;
-    }
-
-    public function getSuggestedTranslation() {
-        return $this->_suggestedTranslation;
-    }
-
-    public function setSuggestedTranslation($suggestedTranslation) {
-        $this->_suggestedTranslation = $suggestedTranslation;
         return $this;
     }
 

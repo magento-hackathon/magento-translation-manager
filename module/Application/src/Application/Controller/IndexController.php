@@ -179,15 +179,19 @@ class IndexController extends Base
         }
 
         $translations = $this->getResourceTranslation()->fetchByBaseId($baseId);
+
         return new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
             'currentLocale'        => $this->_currentLocale,
             'currentTranslationFile' => $this->getResourceTranslationFile()->getTranslationFile(
-                    $baseTranslation->getTranslationFileId()
+                $baseTranslation->getTranslationFileId()
             )->getFilename(),
             'messages'             => $this->_messages,
             'baseTranslation'      => $baseTranslation,
             'translations'         => $translations,
+            'suggestions'          => $this->getResourceSuggestion()->fetchByTranslationId(
+                $translations[$this->_currentLocale]->getTranslationId()
+            ),
             'previousItemId'       => $allBaseIds[$previousKey],
             'nextItemId'           => $allBaseIds[$nextKey],
         ));
