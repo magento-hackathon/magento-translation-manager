@@ -182,6 +182,9 @@ class IndexController extends Base
         return new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
             'currentLocale'        => $this->_currentLocale,
+            'currentTranslationFile' => $this->getResourceTranslationFile()->getTranslationFile(
+                    $baseTranslation->getTranslationFileId()
+            )->getFilename(),
             'messages'             => $this->_messages,
             'baseTranslation'      => $baseTranslation,
             'translations'         => $translations,
@@ -204,7 +207,7 @@ class IndexController extends Base
 
         $translation = null;
         if (isset($element['id'])) {
-            $translation = $this->getResourceTranslation()->getTranslation($element['trnaslation_id']);
+            $translation = $this->getResourceTranslation()->getTranslation($element['translation_id']);
             if (false == $translation) {
                 $translation = new Translation();
             }

@@ -6,6 +6,7 @@ use Application\Model\Translation;
  *
  * @var array $supportedLocales of strings
  * @var string $currentLocale
+ * @var string $currentTranslationFile
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
  * @var array $translations of Translation with index locale
@@ -41,7 +42,8 @@ use Application\Model\Translation;
                 <?php endforeach; ?>
             </ul>
         </div>
-        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($baseTranslation->getTranslationFileId()) ?></span> <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
+        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($currentTranslationFile) ?></span>
+        <b>selected language:</b> <span class="label label-default"><?php echo $this->escapeHtml($currentLocale) ?></span>
     </div>
 </div>
 
