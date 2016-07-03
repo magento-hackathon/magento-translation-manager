@@ -51,8 +51,8 @@ use Application\Model\Translation;
     <div class="row">
         <div class="col-md-12">
             <div style="margin-bottom: 25px; overflow: hidden;">
-                <button class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</button>
-                <button class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</button>
+                <a class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</a>
+                <a class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</a>
             </div>
         </div>
     </div>
