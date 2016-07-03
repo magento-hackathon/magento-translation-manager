@@ -136,8 +136,6 @@ use Application\Model\Translation;
                 </div>
                 <div class="panel-body">
                     <div class="input-group col-md-12">
-                        <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
-                        <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit Suggestion</button>
                         <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"></textarea>
                         <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit suggestion</button>
                     </div>
