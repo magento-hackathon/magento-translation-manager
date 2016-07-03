@@ -2,7 +2,7 @@
 return array(
     'db' => array(
         'driver'         => 'Pdo',
-        'dsn'            => 'mysql:dbname=lme-translation;host=localhost',
+        'dsn'            => 'mysql:dbname=magento_translation_manager;host=localhost',
         'username'       => 'root',
         'password'       => '',
         'driver_options' => array(

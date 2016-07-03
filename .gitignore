@@ -6,7 +6,9 @@ nbproject
 .idea
 .project
 .settings
+.directory
 composer.lock
 vendor/bin
 test/
 /public/export/*.csv
+/config/autoload/db.local.php
