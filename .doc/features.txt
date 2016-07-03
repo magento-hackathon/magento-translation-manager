@@ -2,19 +2,19 @@
 Feature list 
 -----------------------
 
-translation details: Show a screen where string is used in Magento
-(+) add a lightbox which provides screen file from db
+translation details: show a screenshot where string is used in Magento
+(+) add a lightbox which provides screenshot file from db
 
 translation list/ details: 
 (+) save a new suggestion to db
-(+) validate suggestion string, if it is still used (show a message)
+(+) validate suggestion string, if it is still in use (show a message)
 
-userroles:
-(+) add some user roles (Admin, Editor) (initial via .htaccess)
-(+) Admin permissions
-    (+) add a button: add a new MageVersion (add initial in affected db table)
-    (+) add a button: add a new locale (add initial in affected db table)
-    (+) add a approve a suggestion mode
+user roles:
+(+) add some user roles (Admin, Editor) (initially via .htaccess)
+(+) admin permissions
+    (+) add a button: add new Magento version (add initially in affected db table)
+    (+) add a button: add new locale (add initially in affected db table)
+    (+) add suggestion approval mode
         (+) select a suggestion item
-        (+) selected suggested_translation item will replace current_translation
-        (+) flag unclear_translation will reset to unselect
+        (+) selected suggested_translation item replaces current_translation
+        (+) flag unclear_translation resets suggestion to unselected status
