@@ -6,8 +6,8 @@ class TranslationBase extends Base {
 
     /* @var int $_baseId */
     protected $_baseId = null;
-    /* @var string $_translationFile */
-    protected $_translationFile = null;
+    /* @var string $_translationFileId */
+    protected $_translationFileId = null;
     /* @var string $_originSource */
     protected $_originSource = null;
     /* @var boolean $_notInUse */
@@ -25,12 +25,12 @@ class TranslationBase extends Base {
         return $this;
     }
 
-    public function getTranslationFile() {
-        return $this->_translationFile;
+    public function getTranslationFileId() {
+        return $this->_translationFileId;
     }
 
-    public function setTranslationFile($translationFile) {
-        $this->_translationFile = $translationFile;
+    public function setTranslationFileId($translationFileId) {
+        $this->_translationFileId = $translationFileId;
         return $this;
     }
 

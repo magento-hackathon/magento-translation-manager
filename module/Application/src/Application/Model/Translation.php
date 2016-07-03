@@ -4,8 +4,8 @@ namespace Application\Model;
 
 class Translation extends Base {
 
-    /* @var int $_id */
-    protected $_id = null;
+    /* @var int $_translationId */
+    protected $_translationId = null;
     /* @var int $_baseId */
     protected $_baseId = null;
     /* @var string $_locale */
@@ -17,12 +17,12 @@ class Translation extends Base {
     /* @var string $_unclearTranslation */
     protected $_unclearTranslation = null;
 
-    public function getId() {
-        return $this->_id;
+    public function getTranslationId() {
+        return $this->_translationId;
     }
 
-    public function setId($id) {
-        $this->_id = $id;
+    public function setId($translationId) {
+        $this->_translationId = $translationId;
         return $this;
     }
 

@@ -1,5 +1,5 @@
 1. git clone project
-2. create database (e.g. lme-translation) and import .doc/lme-translation.sql
+2. create database (e.g. magento_translation_manager) and import the zipped .doc/magento_translation_manager.sql.zip
 3. composer install (do reinitialisize the Zend stuff)
 4. Copy config/autoload/db.local.php.dist to config/autoload/db.local.php and control credentials
 5. open frontend

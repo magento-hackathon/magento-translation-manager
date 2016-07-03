@@ -6,6 +6,7 @@ use Application\Model\Translation;
  *
  * @var array $supportedLocales of strings
  * @var string $currentLocale
+ * @var string $currentTranslationFile
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
  * @var array $translations of Translation with index locale
@@ -41,7 +42,8 @@ use Application\Model\Translation;
                 <?php endforeach; ?>
             </ul>
         </div>
-        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($baseTranslation->getTranslationFile()) ?></span> <b>selected language:</b> <span class="label label-default"><?php echo $currentLocale ?></span>
+        <b>selected file:</b> <span class="label label-primary"><?php echo $this->escapeHtml($currentTranslationFile) ?></span>
+        <b>selected language:</b> <span class="label label-default"><?php echo $this->escapeHtml($currentLocale) ?></span>
     </div>
 </div>
 
@@ -49,8 +51,8 @@ use Application\Model\Translation;
     <div class="row">
         <div class="col-md-12">
             <div style="margin-bottom: 25px; overflow: hidden;">
-                <button class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</button>
-                <button class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</button>
+                <a class="btn btn-default pull-left" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $previousItemId), array('query' => array('locale' => $currentLocale))) ?>">Previous translation</a>
+                <a class="btn btn-default pull-right" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $nextItemId), array('query' => array('locale' => $currentLocale))) ?>">Next translation</a>
             </div>
         </div>
     </div>
@@ -59,7 +61,7 @@ use Application\Model\Translation;
             <?php $rowName = 'row' .$currentLocale; ?>
             <input type="hidden" name="base_id" value="<?php echo $baseTranslation->getBaseId() ?>" />
             <input type="hidden" name="<?php echo $rowName ?>_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
-            <input type="hidden" name="<?php echo $rowName ?>_id" value="<?php echo $translations[$currentLocale]->getId() ?>" />
+            <input type="hidden" name="<?php echo $rowName ?>_id" value="<?php echo $translations[$currentLocale]->getTranslationId() ?>" />
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <strong>Origin source</strong>
@@ -183,7 +185,7 @@ use Application\Model\Translation;
                                 <td>
                                     <div style="min-width: 125px">
                                         <input type="hidden" name="<?php echo $rowName ?>_locale" value="<?php echo $locale ?>" />
-                                        <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation->getId())?>" />
+                                        <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation->getTranslationId())?>" />
                                         <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Submit Suggestion"><span class="glyphicon glyphicon-plus"></span></button>
                                         &nbsp;
                                         <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="See Details" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $baseTranslation->getBaseId()), array('query' => array('locale' => $locale))) ?>"><span class="glyphicon glyphicon-search"></span></a>
