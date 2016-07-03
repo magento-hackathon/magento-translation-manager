@@ -156,11 +156,63 @@ use Application\Model\Translation;
 
     <div class="row">
         <div class="col-md-12">
-                <div class="panel panel-default" id="accordion" role="tablist" aria-multiselectable="true" data-toggle="collapse" data-target="#demo">
+            <div class="panel panel-default" id="accordion" role="tablist" aria-multiselectable="true" data-toggle="collapse" data-target="#MageVersions">
                 <div class="panel-heading">
-                    <strong>Other translations</strong>
+                    <strong>Further translations (MageVersions)</strong>
                 </div>
-                <div class="panel-body collapse" id="demo">
+                <div class="panel-body collapse" id="MageVersions">
+                    <table class="table table-hover table-striped" id="translation-grid">
+                        <tr>
+                            <th>MageVersion<th>
+                            <th>Current translation<th>
+                            <th colspan="2" class="text-center"><span title="unclear translation">Status</span></th>
+                            <th>t.b.d.<th>
+                            <th><th>
+                        </tr>
+                        <?php foreach ($translations as $locale => $translation): ?>
+                            <?php if ($locale == $currentLocale) continue; ?>
+                            <?php /* @var $translation \Application\Model\Translation */ ?>
+                            <?php $rowName = 'row' . $locale; ?>
+                            <tr id="<?php echo $rowName ?>">
+                                <td><?php echo $this->escapeHtml($locale) ?><td>
+                                <td><?php echo $this->escapeHtml($translation->getCurrentTranslation()) ?><td>
+                                <td>
+                                    <?php if ((bool)$translation->getUnclearTranslation()): ?>
+                                        <i class="glyphicon glyphicon-exclamation-sign unclear" title="unclear translation"></i>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <input type="radio" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation->getUnclearTranslation()) ? 'checked="checked"':'' ?>>
+                                    <!-- <input type="checkbox" name="<?php echo $rowName?>_unclearTranslation" value="1" <?php echo (bool)($translation->getUnclearTranslation()) ? 'checked="checked"':'' ?>> -->
+                                </td>
+                                <td class="suggested-translation">
+                                    <input type="text" class="form-control" name="<?php echo $rowName?>_suggestedTranslation" value="" />
+                                <td>
+                                <td>
+                                    <div style="min-width: 125px">
+                                        <input type="hidden" name="<?php echo $rowName ?>_locale" value="<?php echo $locale ?>" />
+                                        <input type="hidden" name="<?php echo $rowName?>_id" value="<?php echo $this->escapeHtmlAttr($translation->getTranslationId())?>" />
+                                        <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Submit Suggestion"><span class="glyphicon glyphicon-plus"></span></button>
+                                        &nbsp;
+                                        <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="See Details" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $baseTranslation->getBaseId()), array('query' => array('locale' => $locale))) ?>"><span class="glyphicon glyphicon-search"></span></a>
+                                    </div>
+                                <td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+                <div class="panel panel-default" id="accordion" role="tablist" aria-multiselectable="true" data-toggle="collapse" data-target="#locales">
+                <div class="panel-heading">
+                    <strong>Further translations (locales)</strong>
+                </div>
+                <div class="panel-body collapse" id="locales">
                     <table class="table table-hover table-striped" id="translation-grid">
                         <tr>
                             <th>Locale<th>
@@ -179,7 +231,6 @@ use Application\Model\Translation;
                                 <td>
                                     <?php if ((bool)$translation->getUnclearTranslation()): ?>
                                         <i class="glyphicon glyphicon-exclamation-sign unclear" title="unclear translation"></i>
-                                        <i class="glyphicon glyphicon-excclamation-sign unclear" title="unclear translation"></i>
                                     <?php endif; ?>
                                 </td>
                                 <td>
