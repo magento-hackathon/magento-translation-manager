@@ -10,6 +10,7 @@ use Application\Model\Translation;
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
  * @var array $translations of Translation with index locale
+ * @var array $suggestions of Suggestion with index suggestion_id
  * @var int $previousItemId
  * @var int $nextItemId
  */
@@ -103,12 +104,18 @@ use Application\Model\Translation;
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong>Existing Suggestions</strong>
+                    <strong>Existing suggestions</strong>
                     <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
                     <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                 </div>
                 <div class="panel-body">
-                    <?php echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
+                    <?php foreach ($suggestions as $suggestionId => $suggestion): ?>
+                        <span id="suggestion_<?php echo (int)$suggestionId ?>">
+                            <?php echo $suggestion->getSuggestedTranslation() ?>
+                        </span>
+                    <?php endforeach; ?>
+
+                    <?php //echo $this->escapeHtml($translations[$currentLocale]->getCurrentTranslation()); ?>
                 </div>
             </div>
         </div>

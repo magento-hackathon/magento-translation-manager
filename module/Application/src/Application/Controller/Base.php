@@ -29,6 +29,10 @@ class Base extends AbstractActionController {
      * @var $_translationTable \Application\Resource\TranslationFile
      */
     protected $_translationFileTable = null;
+    /**
+     * @var $_suggestionTable \Application\Resource\Suggestion
+     */
+    protected $_suggestionTable = null;
 
     /**
      * @var array - supported Locales
@@ -107,5 +111,21 @@ class Base extends AbstractActionController {
             $this->_translationFileTable = $resourceModel;
         }
         return $this->_translationFileTable;
+    }
+
+    /**
+     * get suggestion resource
+     *
+     * @return \Application\Resource\Suggestion
+     */
+    protected function getResourceSuggestion()
+    {
+        if (null == $this->_suggestionTable) {
+            $sm = $this->getServiceLocator();
+            /* @var $resourceModel \Application\Resource\Suggestion */
+            $resourceModel = $sm->get('Application\Resource\Suggestion');
+            $this->_suggestionTable = $resourceModel;
+        }
+        return $this->_suggestionTable;
     }
 }

@@ -19,7 +19,7 @@ class Translation extends Base {
         return $this->_translationId;
     }
 
-    public function setId($translationId) {
+    public function setTranslationId($translationId) {
         $this->_translationId = $translationId;
         return $this;
     }

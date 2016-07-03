@@ -106,7 +106,7 @@ class Translation extends Base {
         foreach ($resultSet as $row) {
             $locale = $row['locale'];
             $languages[$locale] = new Model\Translation(array(
-                'translation_id'       => $row['translation_id'],
+                'translationId'        => $row['translation_id'],
                 'baseId'               => $row['base_id'],
                 'locale'               => $row['locale'],
                 'currentTranslation'   => $row['current_translation'],
