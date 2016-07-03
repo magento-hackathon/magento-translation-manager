@@ -1,0 +1,51 @@
+------------------------------------------------
+MVP | Magento translation manager
+------------------------------------------------
+use case:
+ - tool as locale installation, locale db, web user interface
+ - single user responsible to manage translations
+   (load, edit, approve, export)
+   
+features:
+(-) planned (+) already works
+
+(-) to load csv translation files into tool (db)
+(+) to enrich csv with meta data (source file, locale, mageversion)
+(+) to mark translation strings to be maintained
+(+) to edit translation strings (set a new current translation)
+(-) to approve translation strings
+(+) to export csv translation files from tool (db)
+
+(-) to identify/ match translastions with former mageversions (while import)
+    (-) to match automatically for 1:1 results
+    (-) to match automatically for close results, mark translation to be maintained
+    (-) to suggest automatically near results, mark translation to be maintained
+
+------------------------------------------------
+future VP+
+------------------------------------------------
+use case:
+- tool as intranet installation, locale db, web user interface
+- single admin user responsible to manage translations
+   (load, edit, approve, export)
+- editor users can manage translations
+   (suggest)
+   
+features:
+(+) to suggest translation strings (1:n)
+(-) to select suggested translation strings and approve them (set a new current translation)
+
+(-) to load csv translation files from repository into tool (db)
+(-) to export csv translation files to repository into tool (db)
+
+------------------------------------------------
+future VP++
+------------------------------------------------
+use case:
+- network installation (web interface)
+- admin users responsible for managing translations
+   (load, edit, approve)
+- editor users can manage translations
+   (suggest)   
+
+features:
