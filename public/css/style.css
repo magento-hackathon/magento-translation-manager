@@ -51,3 +51,12 @@ ul.messages {
     font-size: 120%;
     color: #FF0000;
 }
+
+.modal-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#accordion .panel-heading {
+    cursor: pointer;
+}

@@ -70,9 +70,15 @@ use Application\Model\Translation;
                     <?php echo $this->escapeHtml($baseTranslation->getOriginSource()); ?>
                 </div>
                 <div class="panel-footer">
-                    <button class="glyphicon glyphicon-camera">
-
-                    </button>
+                    <?php if ('' != $baseTranslation->getScreenPath()): ?>
+                        <a href="<?php echo $this->basePath('usages/' . $baseTranslation->getScreenPath()) ?>" class="btn btn-default" role="button" data-target="#lightbox" data-toggle="lightbox">
+                            <span class="glyphicon glyphicon-camera"></span> Show Context
+                        </a>
+                    <?php else: ?>
+                    <a href="<?php echo $this->basePath('img/fallback-no-screenshot.png') ?>" class="btn btn-default" role="button" data-target="#lightbox" data-toggle="lightbox" data-width="400">
+                        <span class="glyphicon glyphicon-camera"></span> Show Context
+                    </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -84,7 +90,7 @@ use Application\Model\Translation;
                     <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
                     <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                     <?php if ($unclearSelected): ?>
-                        <i class="glyphicon glyphicon-question-sign unclear " title="unclear translation"></i>
+                        <i class="glyphicon glyphicon-exclamation-sign unclear " title="unclear translation"></i>
                     <?php endif; ?>
                 </div>
                 <div class="panel-body">
@@ -122,7 +128,7 @@ use Application\Model\Translation;
                 <div class="panel-body">
                     <div class="input-group col-md-12">
                         <textarea class="form-control" rows="3" name="<?php echo $rowName ?>_suggestedTranslation"><?php echo $this->escapeHtml($translations[$currentLocale]->getSuggestedTranslation()) ?></textarea>
-                        <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit Suggestions</button>
+                        <button type="submit" value="<?php echo $rowName ?>" name="rowid" class="btn btn-primary btn-lg pull-right" style="margin-top: 15px;">Submit Suggestion</button>
                     </div>
                 </div>
             </div>
@@ -141,9 +147,11 @@ use Application\Model\Translation;
 
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>Other translations</strong></div>
-                <div class="panel-body">
+                <div class="panel panel-default" id="accordion" role="tablist" aria-multiselectable="true" data-toggle="collapse" data-target="#demo">
+                <div class="panel-heading">
+                    <strong>Other translations</strong>
+                </div>
+                <div class="panel-body collapse" id="demo">
                     <table class="table table-hover table-striped" id="translation-grid">
                         <tr>
                             <th>Locale<th>
@@ -162,6 +170,7 @@ use Application\Model\Translation;
                                 <td>
                                     <?php if ((bool)$translation->getUnclearTranslation()): ?>
                                         <i class="glyphicon glyphicon-exclamation-sign unclear" title="unclear translation"></i>
+                                        <i class="glyphicon glyphicon-excclamation-sign unclear" title="unclear translation"></i>
                                     <?php endif; ?>
                                 </td>
                                 <td>
