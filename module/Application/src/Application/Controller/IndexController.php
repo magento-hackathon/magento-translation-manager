@@ -8,6 +8,8 @@ use Zend\View\Model\ViewModel;
 
 class IndexController extends Base
 {
+    const DEFAULT_ENTRIES_PER_PAGE = 100;
+
     /**
      * @var string - current locale selected by user
      */
@@ -40,79 +42,53 @@ class IndexController extends Base
         // init grid
         $jumpToRow = null;
         $currentFile = null;
+
+        // save form on user interaction
+        if ($this->params()->fromPost('rowid')) {
+            $jumpToRow = $this->saveIndexForm();
+        }
+
+        // prepare filter
         $currentFilterUnclear = (bool)$this->params()->fromQuery('filter_unclear_translation');
 
         if ($this->params()->fromQuery('file')) {
             $currentFile = (array)$this->params()->fromQuery('file');
         }
 
-        // save form
-        if ($this->params()->fromPost('rowid')) {
-            // split POST params into rows
-            $formRows = array( /* rowid => array(field => value) */ );
-            $postParams = $this->params()->fromPost();
-            foreach ($postParams as $postKey => $postValue) {
-                if (preg_match('@(row\d+)_(.+)@', $postKey, $matches)) {
-                    $formRows[$matches[1]][$matches[2]] = $postValue;
-                }
-            }
+        // prepare pagination
+        $page = $this->params()->fromQuery('page') ?: 1;
+        $maxPage = 1;
+        $elementsPerPage = $this->params()->fromQuery('epp') ?: self::DEFAULT_ENTRIES_PER_PAGE;
+        $translationsCount = $this->getResourceTranslation()->countByLanguageAndFile($this->_currentLocale, $currentFile, $currentFilterUnclear);
+        if ('all' == $elementsPerPage) {
+            // show all entries on one page
+            $elementsPerPage = null;
+        } else {
+            $maxPage = ceil($translationsCount / $elementsPerPage);
+        }
 
-            // decide if one or all elements should be saved
-            if ('all' == $this->params()->fromPost('rowid')) {
-                $errors = 0;
-                $elementsModified = 0;
-                foreach ($formRows as $row) {
-                    if (empty($row['suggestedTranslation'])) {
-                        continue;
-                    }
-                    try {
-                        $modified = $this->addSuggestion((int)$row['translationId'], $row['suggestedTranslation']);
-                        if (false !== $modified) {
-                            $elementsModified++;
-                        }
-                    } catch(\Exception $e) {
-                        $errors++;
-                    }
-                }
-
-                if (0 < $errors) {
-                    $this->addMessage(sprintf('Error saving %d elements', $errors), self::MESSAGE_ERROR);
-                }
-                if (0 < $elementsModified) {
-                    $this->addMessage(sprintf('%d elements saved successfully', $elementsModified), self::MESSAGE_SUCCESS);
-                }
-                if (0 == $elementsModified && 0 == $errors) {
-                    $this->addMessage('No changes.', self::MESSAGE_INFO);
-                }
-            } else {
-                $rowId = $this->params()->fromPost('rowid');
-                $jumpToRow = $rowId;
-                try {
-                    $success = false;
-                    if (!empty($formRows[$rowId]['suggestedTranslation'])) {
-                        $success = $this->addSuggestion((int)$formRows[$rowId]['translationId'], $formRows[$rowId]['suggestedTranslation']);
-                    }
-
-                    if (false == $success) {
-                        $this->addMessage('No changes.', self::MESSAGE_INFO);
-                    } else {
-                        $this->addMessage(sprintf('Element saved successfully (element #%d)', $success), self::MESSAGE_SUCCESS);
-                    }
-                } catch(\Exception $e) {
-                    $this->addMessage('Error saving element', self::MESSAGE_ERROR);
-                }
-            }
+        if ($page < 0) {
+            $page = 0;
+        }
+        if ($page > $maxPage) {
+            $page = $maxPage;
         }
 
         // prepare view
         $view =  new ViewModel(array(
             'supportedLocales'     => $this->getSupportedLocales(),
-            'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile($this->_currentLocale, $currentFile, $currentFilterUnclear),
+            'translations'         => $this->getResourceTranslation()->fetchByLanguageAndFile(
+                $this->_currentLocale, $currentFile, $currentFilterUnclear, $elementsPerPage, $page
+            ),
             'translationBase'      => $this->getResourceTranslationBase()->fetchAll(),
             'translationFiles'     => $this->getResourceTranslationFile()->fetchAll(),
+            'translationsCount'    => $translationsCount,
             'currentLocale'        => $this->_currentLocale,
             'currentFile'          => (array)$currentFile,
             'currentFilterUnclear' => $currentFilterUnclear,
+            'currentPage'          => $page,
+            'currentEPP'           => $elementsPerPage,
+            'maxPages'             => $maxPage,
             'messages'             => $this->_messages,
             'jumpToRow'            => $jumpToRow,
         ));
@@ -193,7 +169,6 @@ class IndexController extends Base
             }
         }
 
-
         // prepare previous and next item
         $allBaseIds = $this->getResourceTranslationBase()->fetchIds();
         $currentKey = array_search($baseId, $allBaseIds);
@@ -225,6 +200,74 @@ class IndexController extends Base
             'nextItemId'           => $allBaseIds[$nextKey],
         ));
     }
+
+    /**
+     * save suggestions of index form (all or just a single element)
+     *
+     * @return int|null - if we do a single insert we can jump to this id of row
+     */
+    protected function saveIndexForm()
+    {
+        $jumpToRow = null;
+
+        // split POST params into rows
+        $formRows = array( /* rowid => array(field => value) */ );
+        $postParams = $this->params()->fromPost();
+        foreach ($postParams as $postKey => $postValue) {
+            if (preg_match('@(row\d+)_(.+)@', $postKey, $matches)) {
+                $formRows[$matches[1]][$matches[2]] = $postValue;
+            }
+        }
+
+        // decide if one or all elements should be saved
+        if ('all' == $this->params()->fromPost('rowid')) {
+            $errors = 0;
+            $elementsModified = 0;
+            foreach ($formRows as $row) {
+                if (empty($row['suggestedTranslation'])) {
+                    continue;
+                }
+                try {
+                    $modified = $this->addSuggestion((int)$row['translationId'], $row['suggestedTranslation']);
+                    if (false !== $modified) {
+                        $elementsModified++;
+                    }
+                } catch(\Exception $e) {
+                    $errors++;
+                }
+            }
+
+            if (0 < $errors) {
+                $this->addMessage(sprintf('Error saving %d elements', $errors), self::MESSAGE_ERROR);
+            }
+            if (0 < $elementsModified) {
+                $this->addMessage(sprintf('%d elements saved successfully', $elementsModified), self::MESSAGE_SUCCESS);
+            }
+            if (0 == $elementsModified && 0 == $errors) {
+                $this->addMessage('No changes.', self::MESSAGE_INFO);
+            }
+        } else {
+            $rowId = $this->params()->fromPost('rowid');
+            $jumpToRow = $rowId;
+            try {
+                $success = false;
+                if (!empty($formRows[$rowId]['suggestedTranslation'])) {
+                    $success = $this->addSuggestion((int)$formRows[$rowId]['translationId'], $formRows[$rowId]['suggestedTranslation']);
+                }
+
+                if (false == $success) {
+                    $this->addMessage('No changes.', self::MESSAGE_INFO);
+                } else {
+                    $this->addMessage(sprintf('Element saved successfully (element #%d)', $success), self::MESSAGE_SUCCESS);
+                }
+            } catch(\Exception $e) {
+                $this->addMessage('Error saving element', self::MESSAGE_ERROR);
+            }
+        }
+
+        return $jumpToRow;
+    }
+
 
     /**
      * save Translation element with given data

@@ -9,9 +9,14 @@ use Application\Model\Translation;
  * @var Translation[] $translations with index translation_id
  * @var TranslationBase[] $translationBase with index translation_base_id
  * @var string[] $translationFiles
+ * @var int $translationsCount
  * @var string $currentLocale
  * @var string[] $currentFile
  * @var boolean $currentFilterUnclear
+ * @var int $currentPage
+ * @var int $currentEPP - entries per page
+ * @var int $maxPages
+ * @var string[] messages with index messageLevel
  * @var string $jumpToRow
  */
 ?>
@@ -31,8 +36,8 @@ use Application\Model\Translation;
 </ul>
 
 <div class="row">
-    <div class="panel panel-default">
-        <div class="panel-heading"><b>Basic data</b></div>
+    <div class="panel panel-default filter-area">
+        <div class="panel-heading"><strong>Filter</strong></div>
         <div class="panel-body">
 
             <div class="btn-group">
@@ -81,11 +86,58 @@ use Application\Model\Translation;
                     show only unclear
                 </button>
             <?php endif; ?>
+
+            <br />
+
+            <ul class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage - 1, 'epp' => $currentEPP))); ?>" aria-label="Previous">
+                        &laquo;
+                    </a></li>
+                <?php endif; ?>
+                <?php for ($i = 1; $i <= $maxPages; $i++): ?>
+                    <?php $class = ($i == $currentPage) ? 'active' : ''; ?>
+                    <li class="<?php echo $class ?>"><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $i, 'epp' => $currentEPP))); ?>">
+                        <?php echo $i ?>
+                    </a></li>
+                <?php endfor; ?>
+                <?php if ($currentPage < $maxPages): ?>
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage + 1, 'epp' => $currentEPP))); ?>" aria-label="Next">
+                        &raquo;
+                    </a></li>
+                <?php endif; ?>
+            </ul>
+
+            <span id="entries-per-page-button" style="margin-left: 10px"><!-- TODO: where comes the top margin from (see CSS)? -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        Entries per page <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 25))); ?>">
+                            25
+                        </a></li>
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 50))); ?>">
+                            50
+                        </a></li>
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 100))); ?>">
+                            100
+                        </a></li>
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 250))); ?>">
+                            250
+                        </a></li>
+                        <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 'all'))); ?>">
+                            all
+                        </a></li>
+                    </ul>
+                </div>
+                <strong>per page: </strong><span class="label label-default"><?php echo (null !== $currentEPP) ? (int)$currentEPP : 'all' ?></span>
+            </span>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading"><b>overall view list</b></div>
+        <div class="panel-heading"><strong>overall view list</strong> (<?php echo count($translations) ?> / <?php echo (int)$translationsCount ?> elements)</div>
         <div class="panel-body">
             <form action="" method="post">
                 <input type="hidden" name="translation_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />

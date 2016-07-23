@@ -64,3 +64,7 @@ ul.messages {
 #accordion .panel-heading {
     cursor: pointer;
 }
+
+.filter-area .pagination {
+    margin-bottom: 0;
+}

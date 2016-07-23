@@ -1,6 +1,7 @@
 <?php
 namespace Application\Resource;
 
+use Application\Controller\IndexController;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
@@ -48,19 +49,78 @@ class Translation extends Base {
     }
 
     /**
+     * count translations with given filter
+     *
+     * @param string $locale - locale to select
+     * @param string|null $file - file to select (null = all files)
+     * @param boolean $filterUnclear - filter only unclear translations
+     * @return int - number of translations with this filter
+     */
+    public function countByLanguageAndFile($locale, $file = null, $filterUnclear = false)
+    {
+        // prepare base query
+        $sql = new Sql($this->getAdapter());
+        $select = $sql->select($this->table);
+        $select = $this->prepareSqlByLanguageAndFile($select, $locale, $file, $filterUnclear);
+
+        // add count
+        $select->reset('columns')->columns(array('count' => new Expression('COUNT(*)')));
+
+        $statement  = $sql->prepareStatementForSqlObject($select);
+        $resultSet = $statement->execute();
+
+        $result = $resultSet->current();
+
+        return (int)$result['count'];
+    }
+
+
+    /**
      * search all translations by given locale and file
      *
      * @param string $locale - locale to select
      * @param string|null $file - file to select (null = all files)
      * @param boolean $filterUnclear - filter only unclear translations
+     * @param int|null $elementsPerPage - entries to show per page (null = all entries)
+     * @param int $page - page to show
      * @return Model\Translation[]
      */
-    public function fetchByLanguageAndFile($locale, $file = null, $filterUnclear = false)
+    public function fetchByLanguageAndFile($locale, $file = null, $filterUnclear = false, $elementsPerPage = IndexController::DEFAULT_ENTRIES_PER_PAGE, $page = 1)
+    {
+        $sql = new Sql($this->getAdapter());
+        $select = $sql->select($this->table);
+        $select = $this->prepareSqlByLanguageAndFile($select, $locale, $file, $filterUnclear);
+
+        if (null !== $elementsPerPage) {
+            // react to pagination
+            $select->limit((int)$elementsPerPage)->offset(($page - 1) * $elementsPerPage);
+        }
+
+        $statement  = $sql->prepareStatementForSqlObject($select);
+
+        $resultSet = $statement->execute();
+        //$entities = $this->_prepareCollection($resultSet);
+        $entities = array();
+        foreach ($resultSet as $row) {
+            $entities[] = $row;
+        }
+
+        return $entities;
+    }
+
+    /**
+     * prepare base SQL for grid filtered by language and file
+     *
+     * @param Select $select - empty Select object
+     * @param string $locale - locale to filter
+     * @param string|null $file - filename to filter
+     * @param bool $filterUnclear - filter only unclear translations
+     * @return Select - prepared query
+     */
+    protected function prepareSqlByLanguageAndFile($select, $locale, $file = null, $filterUnclear = false)
     {
         // we need table object for quoteinto
 
-        $sql = new Sql($this->getAdapter());
-        $select = $sql->select($this->table);
         $select->order('translation_id ASC');
 
         $joinCondition  = $this->table . '.base_id = translation_base.base_id ';
@@ -81,23 +141,15 @@ class Translation extends Base {
             $select->where(array('unclear_translation' => 1));
         }
 
-        $statement  = $sql->prepareStatementForSqlObject($select);
-
-        $resultSet = $statement->execute();
-        //$entities = $this->_prepareCollection($resultSet);
-        $entities = array();
-        foreach ($resultSet as $row) {
-            $entities[] = $row;
-        }
-
-        return $entities;
+        return $select;
     }
+
 
     /**
      * get translated strings of base translation ordered by locale
      *
      * @param int $baseId
-     * @return Translation[] with index locale
+     * @return Model\Translation[] with index locale
      */
     public function fetchByBaseId($baseId)
     {
