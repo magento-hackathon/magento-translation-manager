@@ -9,3 +9,6 @@ installation.txt
 features.txt or mvp.txt
 - collection of some ideas, features and tasks
 - MVP definition for some improvement periods
+
+admin
+- you can export your CSV files via Admin dashboard at <baseurl>/admin/index

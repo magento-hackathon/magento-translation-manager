@@ -10,5 +10,5 @@ nbproject
 composer.lock
 vendor/bin
 test/
-/public/export/*.csv
+/public/export/
 /config/autoload/db.local.php
