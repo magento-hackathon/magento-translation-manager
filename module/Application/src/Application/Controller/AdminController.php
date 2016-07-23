@@ -25,6 +25,8 @@ class AdminController extends Base
 
     /**
      * export language files as CSV data
+     * HTTP-Param: translation_file
+     * HTTP-Param: locale
      *
      * @return ViewModel
      */

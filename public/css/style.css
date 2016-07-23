@@ -51,6 +51,10 @@ ul.messages {
     font-size: 120%;
     color: #FF0000;
 }
+.glyphicon-ok-circle.clear {
+    font-size: 120%;
+    color: #009900;
+}
 
 .modal-content {
     max-width: 800px;

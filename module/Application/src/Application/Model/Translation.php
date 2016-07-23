@@ -12,7 +12,7 @@ class Translation extends Base {
     protected $_locale = null;
     /* @var string $_currentTranslation */
     protected $_currentTranslation = null;
-    /* @var string $_unclearTranslation */
+    /* @var boolean $_unclearTranslation */
     protected $_unclearTranslation = null;
 
     public function getTranslationId() {

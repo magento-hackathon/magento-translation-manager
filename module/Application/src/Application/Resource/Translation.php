@@ -1,6 +1,4 @@
 <?php
-
-
 namespace Application\Resource;
 
 use Zend\Db\Sql\Select;

@@ -40,6 +40,16 @@ return array(
                     ),
                 ),
             ),
+            'ajax' => array(
+                'type' => 'Zend\Mvc\Router\Http\Segment',
+                'options' => array(
+                    'route'    => '/ajax/[:action][/:base_id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Ajax',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
@@ -95,6 +105,7 @@ return array(
         'invokables' => array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Admin' => 'Application\Controller\AdminController',
+            'Application\Controller\Ajax'  => 'Application\Controller\AjaxController',
         ),
     ),
     'view_manager' => array(

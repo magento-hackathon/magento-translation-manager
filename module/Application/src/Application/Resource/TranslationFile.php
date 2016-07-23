@@ -1,11 +1,7 @@
 <?php
-
-
 namespace Application\Resource;
 
-
 use Zend\Db\Sql\Select;
-
 use Application\Model;
 
 class TranslationFile extends Base {

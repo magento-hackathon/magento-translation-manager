@@ -15,6 +15,8 @@ class IndexController extends Base
 
     /**
      * define locale out of query params
+     * HTTP-Param: locale
+     *
      */
     public function init()
     {
@@ -25,6 +27,9 @@ class IndexController extends Base
 
     /**
      * translation grid page
+     * HTTP-Param: filter_unclear_translation
+     * HTTP-Param: file
+     * HTTP-Param: rowid
      *
      * @return ViewModel
      */
@@ -117,6 +122,8 @@ class IndexController extends Base
 
     /**
      * translation detail page
+     * HTTP-Param: base_id
+     * HTTP-Param: row_id
      *
      * @return ViewModel
      */
