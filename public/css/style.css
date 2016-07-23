@@ -68,3 +68,6 @@ ul.messages {
 .filter-area .pagination {
     margin-bottom: 0;
 }
+.suggestionlist .label {
+    margin-right: 5px;
+}

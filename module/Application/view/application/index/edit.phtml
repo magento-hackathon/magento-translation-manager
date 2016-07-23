@@ -116,9 +116,9 @@ use Application\Model\Suggestion;
                     <span class="label label-default pull-right"><?php echo $currentLocale ?></span>
                     <span class="pull-right">&nbsp;<img src="<?php echo $this->basePath('img/flags/' . strtolower(substr($currentLocale, 0, 2))) ?>.png" alt="<?php echo $currentLocale ?>" />&nbsp;</span>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body suggestionlist">
                     <?php foreach ($suggestions as $suggestionId => $suggestion): ?>
-                        <span id="suggestion_<?php echo (int)$suggestionId ?>">
+                        <span class="label label-default" id="suggestion_<?php echo (int)$suggestionId ?>">
                             <?php echo $suggestion->getSuggestedTranslation() ?>
                         </span>
                     <?php endforeach; ?>
