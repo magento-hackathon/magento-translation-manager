@@ -1,10 +1,10 @@
 1. git clone project
 2. create database (e.g. magento_translation_manager) and import the zipped .doc/magento_translation_manager.sql.zip
-3. composer install (do reinitialisize the Zend stuff)
-4. Copy config/autoload/db.local.php.dist to config/autoload/db.local.php and control credentials
+3. composer install (do reinitialization of the Zend stuff)
+4. copy config/autoload/db.local.php.dist to config/autoload/db.local.php and control database credentials (config dsn)
 5. open frontend
 
-Hint: There is another Repo with resulted CSV files.
+Hint: You can create another Repo with exported CSV files.
 
 Example VHost:
 
@@ -14,18 +14,18 @@ Example VHost:
     ServerName lme-translation.local
     ErrorLog "logs/lme-translation.local-error.log"
     CustomLog "logs/lme-translation.local-access.log" common
-		
+
     <Directory "C:/workspace/lme-translation/htdocs/public/">
         Options Indexes FollowSymLinks
         AllowOverride All
         Order Deny,Allow
         Allow from all
-		Require all granted
-		
-		php_flag log_errors on
-		php_flag display_errors on
-		php_value error_reporting E_ALL
-		
-		SetEnv APPLICATION_ENV "development"
+        Require all granted
+
+        php_flag log_errors on
+        php_flag display_errors on
+        php_value error_reporting E_ALL
+
+        SetEnv APPLICATION_ENV "development"
     </Directory>
 </VirtualHost>

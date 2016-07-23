@@ -9,11 +9,13 @@ use Zend\View\Model\ViewModel;
 class IndexController extends Base
 {
     /**
-     * @var string - current locale choosed by user
+     * @var string - current locale selected by user
      */
     protected $_currentLocale = self::DEFAULT_LOCALE;
 
-
+    /**
+     * define locale out of query params
+     */
     public function init()
     {
         if ($this->params()->fromQuery('locale')) {
@@ -21,7 +23,12 @@ class IndexController extends Base
         }
     }
 
-    public function indexAction()  // Translation grid
+    /**
+     * translation grid page
+     *
+     * @return ViewModel
+     */
+    public function indexAction()
     {
         $this->init();
 
@@ -108,7 +115,12 @@ class IndexController extends Base
         return $view;
     }
 
-    public function editAction()  // Translation detail
+    /**
+     * translation detail page
+     *
+     * @return ViewModel
+     */
+    public function editAction()
     {
         $this->init();
         $baseId = $this->params('base_id');
@@ -238,17 +250,19 @@ class IndexController extends Base
     /**
      * add a new suggestion
      *
-     * @param $translationId - ID of translation
-     * @param $content - content of the suggestion
-     * @return bool - was successfully saved
+     * @param int $translationId - ID of translation
+     * @param string $content - content of the suggestion
+     * @return boolean - was successfully saved
      */
     protected function addSuggestion($translationId, $content)
     {
-        $result = $this->getResourceSuggestion()->saveSuggestion(new Suggestion(array(
+        $suggestion = new Suggestion(array(
             'suggestionId'         => null,
             'translationId'        => (int)$translationId,
             'suggestedTranslation' => $content,
-        )));
+        ));
+
+        $result = $this->getResourceSuggestion()->saveSuggestion($suggestion);
 
         return boolval($result);
     }

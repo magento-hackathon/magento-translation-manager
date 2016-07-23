@@ -6,6 +6,7 @@ namespace Application\Resource;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Expression;
+use Zend\Db\ResultSet\ResultSet;
 use Application\Model;
 
 class Translation extends Base {
@@ -13,8 +14,10 @@ class Translation extends Base {
     protected $table = 'translation';
 
     /**
+     * prepare array of all translations
+     *
      * @param ResultSet $resultSet
-     * @return array of Model\Translation
+     * @return Model\Translation[] with index translation_id
      */
     protected function _prepareCollection($resultSet)
     {
@@ -27,12 +30,16 @@ class Translation extends Base {
                 'currentTranslation'   => $row['current_translation'],
                 'unclearTranslation'   => $row['unclear_translation'],
             ));
-            $entities[$row['id']] = $entity;
+            $entities[$row['translation_id']] = $entity;
         }
         return $entities;
     }
 
-
+    /**
+     * read all translations
+     *
+     * @return Model\Translation[]
+     */
     public function fetchAll() {
         $resultSet = $this->select(function (Select $select) {
             $select->order('base_id ASC');
@@ -43,9 +50,12 @@ class Translation extends Base {
     }
 
     /**
+     * search all translations by given locale and file
+     *
      * @param string $locale - locale to select
-     * @param string|null $file - file to select
-     * @return array of Model\Translation
+     * @param string|null $file - file to select (null = all files)
+     * @param boolean $filterUnclear - filter only unclear translations
+     * @return Model\Translation[]
      */
     public function fetchByLanguageAndFile($locale, $file = null, $filterUnclear = false)
     {
@@ -89,7 +99,7 @@ class Translation extends Base {
      * get translated strings of base translation ordered by locale
      *
      * @param int $baseId
-     * @return array of Translation (index = locale)
+     * @return Translation[] with index locale
      */
     public function fetchByBaseId($baseId)
     {
@@ -125,12 +135,17 @@ class Translation extends Base {
         return $languages;
     }
 
-
-
+    /**
+     * get translation by ID
+     *
+     * @param int $translationId
+     * @return Model\Translation|bool - false if no Translation can be found
+     */
     public function getTranslation($translationId) {
         $row = $this->select(array('translation_id' => (int) $translationId))->current();
-        if (!$row)
+        if (!$row) {
             return false;
+        }
 
         $translation = new Model\Translation(array(
             'translationId'        => $row->translation_id,
@@ -139,9 +154,16 @@ class Translation extends Base {
             'currentTranslation'   => $row->current_translation,
             'unclearTranslation'   => $row->unclear_translation,
         ));
+
         return $translation;
     }
 
+    /**
+     * save or update translation
+     *
+     * @param Model\Translation $translation
+     * @return bool|int - id of translation on success, false on failure
+     */
     public function saveTranslation(Model\Translation $translation) {
         $data = array(
             'translation_id'        => $translation->getTranslationId(),
@@ -154,21 +176,31 @@ class Translation extends Base {
         $id = (int) $translation->getTranslationId();
 
         if ($id == 0) {
-            if (!$this->insert($data))
+            // insert translation
+            if (!$this->insert($data)) {
                 return false;
+            }
             return $this->getLastInsertValue();
 
         } elseif ($this->getTranslation($id)) {
+            // update translation
             if (!$this->update($data, array('translation_id' => $id))) {
                 return false;
             }
             return $id;
 
         } else {
+            // unknown translation
             return false;
         }
     }
 
+    /**
+     * delete translation by id
+     *
+     * @param int $translationId
+     * @return int - number of deleted translations (should be one, because of PK)
+     */
     public function deleteTranslation($translationId) {
         return $this->delete(array('translation_id' => (int) $translationId));
     }

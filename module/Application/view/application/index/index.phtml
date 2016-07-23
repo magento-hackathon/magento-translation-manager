@@ -1,13 +1,16 @@
 <?php
+use Application\Model\TranslationBase;
+use Application\Model\Translation;
+
 /**
  * @var $this Zend\View\Renderer\PhpRenderer
  *
- * @var array $supportedLocales of string
- * @var array $translations of Translation
- * @var array $translationBase of TranslationBase
- * @var array $translationFiles of string
+ * @var string[] $supportedLocales
+ * @var Translation[] $translations with index translation_id
+ * @var TranslationBase[] $translationBase with index translation_base_id
+ * @var string[] $translationFiles
  * @var string $currentLocale
- * @var array $currentFile of string
+ * @var string[] $currentFile
  * @var boolean $currentFilterUnclear
  * @var string $jumpToRow
  */

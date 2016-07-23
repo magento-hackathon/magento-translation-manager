@@ -1,16 +1,18 @@
 <?php
 use Application\Model\TranslationBase;
 use Application\Model\Translation;
+use Application\Model\Suggestion;
+
 /**
  * @var Zend\View\Renderer\PhpRenderer $this
  *
- * @var array $supportedLocales of strings
+ * @var string[] $supportedLocales
  * @var string $currentLocale
  * @var string $currentTranslationFile
  * @var array $messages of strings
  * @var TranslationBase $baseTranslation
- * @var array $translations of Translation with index locale
- * @var array $suggestions of Suggestion with index suggestion_id
+ * @var Translation[] $translations with index locale
+ * @var Suggestion[] $suggestions with index suggestion_id
  * @var int $previousItemId
  * @var int $nextItemId
  */
