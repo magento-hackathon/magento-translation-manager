@@ -14,11 +14,19 @@ use Zend\Mvc\MvcEvent;
 
 class Module
 {
+    /**
+     * available locales in the application
+     */
+    const LOCALE_AVAILABLE = 'de_DE,en_US';
+
+
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        $this->setLocaleByAcceptedLang($e);
     }
 
     public function getConfig()
@@ -67,5 +75,40 @@ class Module
                 },
             ),
         );
+    }
+
+    /**
+     * define locale by HTTP Header Accept-Language
+     *
+     * @param MvcEvent $e
+     */
+    protected function setLocaleByAcceptedLang($e)
+    {
+        /** @var \Zend\Http\Request $request */
+        $request = $e->getRequest();
+        $headers = $request->getHeaders();
+        if ($headers->has('Accept-Language')) {
+            $availableLocales = explode(',', self::LOCALE_AVAILABLE);
+            $locales = $headers->get('Accept-Language')->getPrioritized();
+
+            foreach ($locales as $locale) {
+                $localeString = $locale->getLanguage();
+                if (false === strpos($localeString, '-')) {
+                    // de    => de_DE
+                    $localeString = $localeString . '_' . strtoupper($localeString);
+                } else {
+                    // en-US => en_US
+                    $localeString = str_replace('-', '_', $localeString);
+                }
+
+                if (in_array($localeString, $availableLocales)) {
+                    $e->getApplication()
+                        ->getServiceManager()
+                        ->get('MvcTranslator')
+                        ->setLocale($localeString);
+                    return;
+                }
+            }
+        }
     }
 }

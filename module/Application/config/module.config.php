@@ -94,11 +94,12 @@ return array(
     'translator' => array(
         'locale' => 'en_US',
         'translation_file_patterns' => array(
+            // poorly we can not use CSV translations because it's not supported
             array(
-                'type'     => 'gettext',
+                'type'     => 'phpArray',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
-            ),
+                'pattern'  => '%s.php',
+            )
         ),
     ),
     'controllers' => array(

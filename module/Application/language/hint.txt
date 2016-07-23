@@ -1,0 +1,1 @@
+Please define available locale also in \Application\Module::LOCALE_AVAILABLE

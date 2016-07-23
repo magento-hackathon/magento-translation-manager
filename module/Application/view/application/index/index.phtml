@@ -37,15 +37,15 @@ use Application\Model\Translation;
 
 <div class="row">
     <div class="panel panel-default filter-area">
-        <div class="panel-heading"><strong>Filter</strong></div>
+        <div class="panel-heading"><strong><?php echo $this->translate('Filter') ?></strong></div>
         <div class="panel-body">
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Translation file <span class="caret"></span>
+                    <?php echo $this->translate('Translation file') ?> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => null, 'filter_unclear_translation' => $currentFilterUnclear))); ?>">all files</a></li>
+                    <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => null, 'filter_unclear_translation' => $currentFilterUnclear))); ?>"><?php echo $this->translate('all files') ?></a></li>
                     <?php foreach ($translationFiles as $fileName): ?>
                     <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $fileName, 'filter_unclear_translation' => $currentFilterUnclear))); ?>">
                             <?php echo $fileName ?></a>
@@ -56,7 +56,7 @@ use Application\Model\Translation;
 
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Language <span class="caret"></span>
+                    <?php echo $this->translate('Language') ?> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <?php foreach ($supportedLocales as $locale): ?>
@@ -66,24 +66,24 @@ use Application\Model\Translation;
                     <?php endforeach; ?>
                 </ul>
             </div>
-            <strong>selected file:</strong>
+            <strong><?php echo $this->translate('selected file:') ?></strong>
             <?php if (empty($currentFile)): ?>
-                <span class="label label-info">all files</span>
+                <span class="label label-info"><?php echo $this->translate('all files') ?></span>
             <?php else: ?>
                 <?php foreach ($currentFile as $fileName): ?>
                     <span class="label label-primary"><?php echo $fileName ?></span>
                 <?php endforeach; ?>
             <?php endif; ?>
 
-            <strong>selected language:</strong> <span class="label label-default"><?php echo $currentLocale ?></span>
-            <strong>unclear translations: </strong>
+            <strong><?php echo $this->translate('selected language:') ?></strong> <span class="label label-default"><?php echo $currentLocale ?></span>
+            <strong><?php echo $this->translate('unclear translations:') ?> </strong>
             <?php if ($currentFilterUnclear): ?>
                 <button class="btn btn-primary" onclick="location.href='<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => 0))) ?>'">
-                    show only unclear
+                    <?php echo $this->translate('show only unclear') ?>
                 </button>
             <?php else: ?>
                 <button class="btn btn-default" onclick="location.href='<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => 1))) ?>'">
-                    show only unclear
+                    <?php echo $this->translate('show only unclear') ?>
                 </button>
             <?php endif; ?>
 
@@ -111,7 +111,7 @@ use Application\Model\Translation;
             <span id="entries-per-page-button" style="margin-left: 10px"><!-- TODO: where comes the top margin from (see CSS)? -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        Entries per page <span class="caret"></span>
+                        <?php echo $this->translate('Entries per page') ?> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 25))); ?>">
@@ -127,26 +127,26 @@ use Application\Model\Translation;
                             250
                         </a></li>
                         <li><a href="<?php echo $this->url('home', array(), array('query' => array('locale' => $currentLocale, 'file' => $currentFile, 'filter_unclear_translation' => $currentFilterUnclear, 'page' => $currentPage, 'epp' => 'all'))); ?>">
-                            all
+                            <?php echo $this->translate('all' ) ?>
                         </a></li>
                     </ul>
                 </div>
-                <strong>per page: </strong><span class="label label-default"><?php echo (null !== $currentEPP) ? (int)$currentEPP : 'all' ?></span>
+                <strong><?php echo $this->translate('per page:') ?> </strong><span class="label label-default"><?php echo (null !== $currentEPP) ? (int)$currentEPP : $this->translate('all') ?></span>
             </span>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>overall view list</strong> (<?php echo count($translations) ?> / <?php echo (int)$translationsCount ?> elements)</div>
+        <div class="panel-heading"><strong><?php echo $this->translate('overall view list') ?></strong> (<?php echo count($translations) ?> / <?php echo (int)$translationsCount ?> <?php echo $this->translate('elements') ?>)</div>
         <div class="panel-body">
             <form action="" method="post">
                 <input type="hidden" name="translation_locale" value="<?php echo $this->escapeHtmlAttr($currentLocale) ?>" />
                 <table class="table table-hover" id="translation-grid">
                     <tr>
-                        <th>Origin source<th>
-                        <th>Current translation<th>
-                        <th colspan="2" class="text-center"><span title="unclear translation">Status</span></th>
-                        <th>New suggested translation<th>
+                        <th><?php echo $this->translate('Origin source') ?><th>
+                        <th><?php echo $this->translate('Current translation') ?><th>
+                        <th colspan="2" class="text-center"><span title="<?php echo $this->translate('unclear translation') ?>"><?php echo $this->translate('Status') ?></span></th>
+                        <th><?php echo $this->translate('New suggested translation') ?><th>
                         <th><th>
                     </tr>
                     <?php foreach ($translations as $id => $translation): ?>
@@ -158,12 +158,12 @@ use Application\Model\Translation;
                             <td><?php echo $this->escapeHtml($translation['current_translation']) ?></td>
                             <td>
                                 <?php if ((bool)$translation['unclear_translation']): ?>
-                                    <button class="unclear-translation" title="unclear translation at the moment" type="button"
+                                    <button class="unclear-translation" title="<?php echo $this->translate('unclear translation at the moment') ?>" type="button"
                                             onclick="toggleUnclearTranslation($(this))" data-translation-id="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>">
                                         <i class="glyphicon glyphicon-exclamation-sign unclear"></i>
                                     </button>
                                 <?php else: ?>
-                                    <button class="unclear-translation" title="clear translation at the moment" type="button"
+                                    <button class="unclear-translation" title="<?php echo $this->translate('clear translation at the moment') ?>" type="button"
                                             onclick="toggleUnclearTranslation($(this))" data-translation-id="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>">
                                         <i class="glyphicon glyphicon-ok-circle clear"></i>
                                     </button>
@@ -176,16 +176,16 @@ use Application\Model\Translation;
                                 <div style="min-width: 125px">
                                     <input type="hidden" name="<?php echo $rowName?>_baseId" value="<?php echo $this->escapeHtmlAttr($translation['base_id'])?>" />
                                     <input type="hidden" name="<?php echo $rowName?>_translationId" value="<?php echo $this->escapeHtmlAttr($translation['translation_id'])?>" />
-                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="Add suggestion"><span class="glyphicon glyphicon-plus"></span></button>
+                                    <button type="submit" value="<?php echo $rowName?>" name="rowid" class="btn btn-primary btn-lg" data-toggle="tooltip" data-placement="right" title="<?php echo $this->translate('Add suggestion') ?>"><span class="glyphicon glyphicon-plus"></span></button>
                                     &nbsp;
-                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="See Details" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-search"></span></a>
+                                    <a class="btn btn-default btn-lg" data-toggle="tooltip" data-placement="right" title="<?php echo $this->translate('See Details') ?>" href="<?php echo $this->url('index', array('action' => 'edit', 'base_id' => $translation['base_id']), array('query' => array('locale' => $currentLocale))) ?>"><span class="glyphicon glyphicon-search"></span></a>
                                 </div>
                             <td>
                         </tr>
                     <?php endforeach; ?>
 
                 </table>
-                <button type="submit" value="all" name="rowid" class="btn btn-primary">Submit all</button>
+                <button type="submit" value="all" name="rowid" class="btn btn-primary"><?php echo $this->translate('Submit all') ?></button>
             </form>
         </div>
     </div>
